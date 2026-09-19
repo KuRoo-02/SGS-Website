@@ -231,7 +231,29 @@ class WP:
                 return json.loads(txt) if txt else {}
         except urllib.error.HTTPError as e:
             detail = e.read().decode()[:400]
-            raise SystemExit(f"\n  HTTP {e.code} on {method} {url}\n  {detail}\n")
+            hint = ""
+            if e.code in (401, 403):
+                hint = (
+                    "\n  This is usually NOT a wrong password. On cPanel shared hosting\n"
+                    "  PHP commonly runs as CGI/FastCGI, which strips the Authorization\n"
+                    "  header before WordPress sees it. Add this to .htaccess ABOVE the\n"
+                    "  # BEGIN WordPress block:\n\n"
+                    "      RewriteEngine On\n"
+                    "      RewriteCond %{HTTP:Authorization} ^(.*)\n"
+                    "      RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]\n\n"
+                    "  Other causes: Application Passwords disabled, a security plugin\n"
+                    "  blocking /wp-json/, or mod_security. See WORDPRESS-SETUP.md SS2.\n"
+                )
+            elif e.code == 404 and "/wp-json" in url:
+                hint = ("\n  REST API unreachable. Usually permalinks are still 'Plain'.\n"
+                        "  Set Settings > Permalinks to 'Post name' and retry.\n")
+            elif e.code == 413:
+                hint = ("\n  Upload rejected as too large. Raise post_max_size and\n"
+                        "  upload_max_filesize, or upload the largest images by hand.\n")
+            elif e.code in (500, 503, 508):
+                hint = ("\n  Likely a host resource limit (CloudLinux LVE / entry processes).\n"
+                        "  Re-run one step at a time with --only, pausing between runs.\n")
+            raise SystemExit(f"\n  HTTP {e.code} on {method} {url}\n  {detail}\n{hint}")
         except urllib.error.URLError as e:
             raise SystemExit(f"\n  Cannot reach {url}\n  {e.reason}\n")
 
@@ -243,6 +265,18 @@ class WP:
 
     def post(self, path, data):
         return self._req("POST", path, data=data)
+
+    def upload_with_retry(self, filepath, alt, tries=3):
+        """Shared hosts throttle and briefly 5xx under load; back off and retry."""
+        import time
+        for n in range(1, tries + 1):
+            try:
+                return self.upload(filepath, alt)
+            except SystemExit:
+                if n == tries:
+                    raise
+                print(f"      retry {n}/{tries - 1} after throttle...")
+                time.sleep(3 * n)
 
     def upload(self, filepath, alt):
         name = os.path.basename(filepath)
@@ -312,7 +346,7 @@ def do_media(wp):
         if DRY:
             say("create", fname, f"upload + alt: {alt[:45]}")
             continue
-        m = wp.upload(path, alt)
+        m = wp.upload_with_retry(path, alt)
         wp.post(f"/media/{m['id']}", {"alt_text": alt})
         ids[fname] = m["id"]
         say("create", fname, f"id={m['id']}")

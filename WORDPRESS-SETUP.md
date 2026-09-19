@@ -10,6 +10,71 @@ Order of work:
 
 ---
 
+## 0. Shared hosting realities — read this first
+
+Shared cPanel hosting is not a small VPS. Several things below are **not yours to
+change**, and a few will actively break Elementor. Plan around them rather than
+discovering them mid-build.
+
+**Run the pre-flight check before anything else.** Upload `tools/sgs-preflight.php`
+to the document root, visit `https://thedomain.com/sgs-preflight.php`, read the table,
+then **delete the file**. It reports what PHP actually got, which is often not what
+cPanel claims.
+
+### What shared hosting commonly restricts
+
+| Limit | Typical cap | What it breaks | Workaround |
+|---|---|---|---|
+| **`max_input_vars`** | 1000 | **Widgets silently vanish when saving a long Elementor page.** No error shown | Raise to 3000+. If hard-capped, split long pages into fewer widgets |
+| `memory_limit` | 128–256M, often hard-capped | Editor white-screens | Ask support to raise. Many will |
+| `max_execution_time` | 30–120s, often hard-capped | Save/import timeouts | Import templates in smaller pieces |
+| **Entry Processes (LVE)** | 20–30 concurrent | **HTTP 508 "Resource Limit Reached"** under load or while editing | Do not run the scaffold script and edit in Elementor simultaneously |
+| CPU / I/O (LVE) | ~1 core equivalent | Slow editor, timeouts | Build during off-peak hours |
+| **No SSH / no WP-CLI** | common | No command-line anything | Everything via wp-admin, cPanel or the REST API |
+| **`Authorization` header stripped** | very common | **Application Passwords return 401** — looks like a wrong password | `.htaccess` rule below |
+| `mod_security` | usually on | 403 on Elementor AJAX saves, or on the REST API | Ask support to whitelist the rule ID from the error log |
+| Inodes (file count) | 100k–250k | Uploads start failing | Each image makes 5–10 thumbnails; disable unused sizes |
+| Email via `mail()` | throttled or filtered | **Contact form appears to send, never arrives** | WP Mail SMTP — treat as mandatory |
+| Cron | min 5–15 min, sometimes disabled | Scheduled posts, backups | Use a real cPanel cron hitting `wp-cron.php` |
+| `exec` / `proc_open` | often disabled | Some backup and image plugins | Prefer plugins that do not need them |
+
+### The Authorization header fix
+
+Needed for `tools/wp-scaffold.py` and any REST client. Add **above** the
+`# BEGIN WordPress` block in `.htaccess`:
+
+```apache
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```
+
+Without it Application Passwords fail with a 401 that looks like a credentials problem
+and is not. The scaffold script detects this case and prints the fix.
+
+### Where to change PHP settings, in order of preference
+
+1. cPanel ▸ **MultiPHP INI Editor** (or Select PHP Version ▸ Options)
+2. A `.user.ini` file in the document root — `max_input_vars = 5000`
+3. `php_value` lines in `.htaccess` — only works if PHP runs as an Apache module, which
+   on modern cPanel it usually does not
+4. **A support ticket.** For hard-capped values this is the only route, and most hosts
+   will raise limits for a WordPress/Elementor site if you ask
+
+If the host refuses to raise `max_input_vars` above 1000 or `memory_limit` above 128M,
+say so before the build starts. It changes what is safely buildable, and it is a reason
+to move to a better plan rather than to fight it.
+
+### Realistic expectations
+
+- Elementor will feel **slower** than on a VPS. That is the plan, not a fault.
+- Install **only the plugins in §3**. Every extra plugin costs memory you do not have.
+- Use LiteSpeed Cache if the host runs LiteSpeed — on shared hosting caching is doing
+  most of the performance work.
+- Build in **short sessions and save often**. A 508 mid-save can lose work.
+
+---
+
 ## 1. Hosting prerequisites — do this BEFORE installing anything
 
 Most "Elementor is broken on shared hosting" problems are these five settings. Shared
@@ -99,6 +164,7 @@ Two ways. Both end in the same place.
 
 ### Option A — automated over the REST API (faster, repeatable)
 
+0. Confirm the `Authorization` header fix from §0 is in `.htaccess` — without it this step returns 401
 1. In wp-admin: **Users ▸ Profile ▸ Application Passwords** → add one named `sgs-scaffold`, copy the generated password
 2. Add to `.env.deploy` in the project root (never committed):
 
