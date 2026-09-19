@@ -1,0 +1,420 @@
+/* ==========================================================================
+   SGS — Elementor Custom CSS
+   --------------------------------------------------------------------------
+   Paste ALL of this into:  Elementor ▸ Site Settings ▸ Custom CSS
+   (one time, before building — several rules affect layout decisions)
+
+   This covers only the things Elementor's UI cannot do natively. Everything
+   else in the design is stock widgets and Global Kit settings.
+
+   HOW IT WORKS
+   Most rules key off a CSS class YOU add to a container or widget in
+   Elementor ▸ Advanced ▸ CSS Classes. Each block says exactly which class
+   to add and where. Class names match the HTML draft, so the draft's source
+   is a 1:1 reference.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. BRAND TOKENS
+   Also set these in Site Settings ▸ Global Colors. Defined here too so the
+   rules below stay readable and you can retune in one place.
+   ========================================================================== */
+:root {
+  --sgs-maroon:    #440115;
+  --sgs-cyan:      #00B0EC;   /* bright — DARK backgrounds only */
+  --sgs-green:     #7EBF41;   /* bright — DARK backgrounds only */
+
+  --ink:           #12040A;
+  --maroon-900:    #24000B;
+  --maroon-800:    #340010;
+
+  --cta-cyan:      #00769F;   /* on LIGHT backgrounds (AA compliant) */
+  --cta-cyan-dark: #005C7E;
+  --green-text:    #4A7A1F;   /* on LIGHT backgrounds (AA compliant) */
+
+  --fg:            #15191E;
+  --fg-muted:      #545C66;
+  --fg-subtle:     #666D76;
+  --border:        #E1E6EB;
+  --surface-2:     #F0F3F6;
+  --dark-fg-muted: #C0B2B7;
+}
+
+/* Why two cyans and two greens: the logo colours only reach ~3.3:1 and ~2.9:1
+   contrast on white, which fails WCAG AA for text. Use --cta-cyan/--green-text
+   for text and buttons on light backgrounds; the bright logo colours are
+   correct on dark backgrounds and for decoration. */
+
+
+/* ==========================================================================
+   2. DARK SECTION BACKGROUND
+   Elementor gives one gradient + one overlay; this stacks three layers.
+
+   ADD CLASS:  sgs-dark      → on the section Container
+   Then set the container's background to none (this rule supplies it).
+   ========================================================================== */
+.sgs-dark {
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(0, 176, 236, .16), transparent 62%),
+    radial-gradient(760px 420px at 92% 108%, rgba(126, 191, 65, .13), transparent 60%),
+    linear-gradient(160deg, #24000B 0%, #12040A 100%) !important;
+}
+
+/* Interior page hero (About / Services / News / Contact)
+   ADD CLASS:  sgs-page-hero   → on the page-hero Container */
+.sgs-page-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 400px at 8% 0%, rgba(0, 176, 236, .20), transparent 60%),
+    radial-gradient(620px 340px at 96% 100%, rgba(126, 191, 65, .14), transparent 60%),
+    linear-gradient(150deg, #24000B 0%, #12040A 100%) !important;
+}
+
+/* Faint grid pattern that fades out — purely decorative, safe to delete */
+.sgs-page-hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(70% 90% at 70% 40%, #000, transparent 75%);
+          mask-image: radial-gradient(70% 90% at 70% 40%, #000, transparent 75%);
+}
+.sgs-page-hero > * { position: relative; z-index: 1; }
+
+/* CTA band
+   ADD CLASS:  sgs-cta-band   → on the CTA Container */
+.sgs-cta-band {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(760px 340px at 82% 12%, rgba(0, 176, 236, .26), transparent 62%),
+    radial-gradient(560px 320px at 6% 96%, rgba(126, 191, 65, .18), transparent 60%),
+    linear-gradient(120deg, #340010 0%, #12040A 100%) !important;
+}
+.sgs-cta-band::after {
+  content: "";
+  position: absolute; right: -120px; top: -120px;
+  width: 460px; height: 460px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow: 0 0 0 60px rgba(255, 255, 255, .02);
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   3. HOME HERO
+   Background image is set in Elementor. This adds the multi-stop scrim that
+   keeps the headline readable over the photo.
+
+   ADD CLASS:  sgs-hero   → on the hero Container
+   Elementor ▸ Style ▸ Background Image: hero-teleport.jpg, position center 42%
+   ========================================================================== */
+.sgs-hero { position: relative; isolation: isolate; }
+.sgs-hero::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    linear-gradient(100deg, rgba(36, 0, 11, .94) 0%, rgba(36, 0, 11, .80) 38%,
+                    rgba(18, 4, 10, .42) 72%, rgba(18, 4, 10, .30) 100%),
+    linear-gradient(to top, rgba(18, 4, 10, .72) 0%, transparent 42%);
+}
+.sgs-hero > * { position: relative; z-index: 1; }
+
+
+/* ==========================================================================
+   4. HERO FACT STRIP  (C-Band / GEO+LEO / 65 km / Tier III)
+
+   Build as: a Container (flex row, 4 child Containers), pinned at the bottom
+   of the hero. Each child holds a Heading (value) + Text (label).
+
+   ADD CLASS:  sgs-strip       → on the row Container
+   ADD CLASS:  sgs-strip-item  → on each of the 4 child Containers
+   ========================================================================== */
+.sgs-strip {
+  background: rgba(18, 4, 10, .55);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255, 255, 255, .13);
+}
+.sgs-strip-item {
+  border-left: 1px solid rgba(255, 255, 255, .11);
+  /* bottom-aligned so all four labels share a baseline even when the
+     longer band value wraps */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.sgs-strip-item:first-child { border-left: 0; }
+
+/* Give the first cell more room so "C-Band, Ku-Band, Ka-Band" stays on one
+   line. In Elementor set the 4 child containers to widths 31% / 23% / 23% / 23%. */
+.sgs-strip-item .elementor-heading-title {
+  font-size: clamp(1.0625rem, .82rem + .62vw, 1.375rem);
+  line-height: 1.15;
+  letter-spacing: -.015em;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .sgs-strip-item { border-left: 0; border-top: 1px solid rgba(255, 255, 255, .11); }
+  .sgs-strip-item:first-child { border-top: 0; }
+  .sgs-strip-item .elementor-heading-title { white-space: normal; }
+}
+
+/* Keeps a hyphenated term from breaking mid-word ("Ku-" / "Band").
+   In the Heading widget, wrap each band:
+   <span class="nb">C-Band</span>, <span class="nb">Ku-Band</span>, <span class="nb">Ka-Band</span> */
+.nb { white-space: nowrap; }
+
+
+/* ==========================================================================
+   5. FROSTED GLASS
+   Elementor's Backdrop Filter control only exists in Editor V4 classes.
+   These are the four places the design uses it.
+
+   ADD CLASS:  sgs-glass        → header Container, hero badge
+   ADD CLASS:  sgs-photo-badge  → the "Rantau, Negeri Sembilan" pill on photos
+   ========================================================================== */
+.sgs-glass {
+  -webkit-backdrop-filter: saturate(150%) blur(10px);
+          backdrop-filter: saturate(150%) blur(10px);
+}
+.sgs-photo-badge {
+  background: rgba(18, 4, 10, .78);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  color: #fff;
+  font-size: .75rem; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 8px 14px;
+}
+
+/* Sticky header shadow once the page scrolls.
+   Elementor ▸ Motion Effects ▸ Sticky adds .elementor-sticky--effects itself. */
+.elementor-sticky--effects.sgs-glass {
+  box-shadow: 0 6px 24px rgba(18, 4, 10, .09);
+  background: rgba(255, 255, 255, .92) !important;
+}
+
+
+/* ==========================================================================
+   6. NEWS CATEGORY TAG COLOURS
+   The Post Terms widget styles every term identically. This colours them by
+   category. Slugs must match: company-news / events / technical-updates.
+
+   ADD CLASS:  sgs-post-tag   → on the Post Terms widget in the Loop Item
+   ========================================================================== */
+.sgs-post-tag .elementor-post-info__terms-list-item,
+.sgs-post-tag a {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 4px;
+  color: #fff !important;
+  font-size: .6875rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  background: var(--cta-cyan);      /* default / Company News */
+}
+.sgs-post-tag a[href*="/events"]            { background: var(--green-text); }
+.sgs-post-tag a[href*="/technical-updates"] { background: var(--sgs-maroon); }
+
+/* If the href match proves unreliable on your permalink structure, drop the
+   two lines above and use one colour for all tags — it still looks right. */
+
+
+/* ==========================================================================
+   7. ACCESSIBILITY  — treat as required, not polish
+   ========================================================================== */
+
+/* Elementor entrance animations ignore reduced-motion by default. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .elementor-invisible { visibility: visible !important; opacity: 1 !important; }
+}
+
+/* Keyboard focus must stay visible. */
+:focus-visible {
+  outline: 3px solid var(--sgs-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Every interactive element must reach 44x44px. */
+.elementor-button,
+.sgs-pill a { min-height: 48px; display: inline-flex; align-items: center; }
+
+/* Inline contact links: grows the tap target without shifting the layout. */
+.sgs-contact-link a {
+  display: inline-block;
+  padding-block: 11px;
+  margin-block: -11px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================================
+   8. TYPOGRAPHY POLISH
+   ========================================================================== */
+h1, h2, h3, h4, h5,
+.elementor-heading-title { text-wrap: balance; }
+
+/* Small uppercase label above a heading.
+   ADD CLASS:  sgs-eyebrow   → on the Heading/Text widget */
+.sgs-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: .75rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--cta-cyan);
+}
+.sgs-eyebrow::before {
+  content: ""; width: 28px; height: 2px;
+  background: var(--sgs-cyan); border-radius: 2px;
+}
+.sgs-dark .sgs-eyebrow,
+.sgs-page-hero .sgs-eyebrow { color: var(--sgs-cyan); }
+.sgs-eyebrow.is-green { color: var(--green-text); }
+.sgs-eyebrow.is-green::before { background: var(--sgs-green); }
+
+
+/* ==========================================================================
+   9. CARD HOVER
+   Elementor can do the shadow; the lift needs this.
+
+   ADD CLASS:  sgs-card   → on each card Container / Icon Box
+   ========================================================================== */
+.sgs-card {
+  transition: transform 220ms cubic-bezier(.22,.61,.36,1),
+              box-shadow 220ms cubic-bezier(.22,.61,.36,1),
+              border-color 220ms cubic-bezier(.22,.61,.36,1);
+}
+.sgs-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px rgba(18, 4, 10, .13);
+  border-color: #C9D1D9;
+}
+
+/* Dark-section card. ADD CLASS: sgs-card sgs-card-dark */
+.sgs-card-dark {
+  background: rgba(255, 255, 255, .045);
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.sgs-card-dark:hover {
+  background: rgba(255, 255, 255, .075);
+  border-color: rgba(0, 176, 236, .42);
+}
+/* Small label above a dark card's heading must use the BRIGHT cyan */
+.sgs-card-dark .sgs-card-num { color: var(--sgs-cyan); }
+.sgs-card-num {
+  font-size: .75rem; font-weight: 700;
+  letter-spacing: .12em; color: var(--cta-cyan);
+}
+
+
+/* ==========================================================================
+   10. DARK-SECTION TABLE
+   Default table colours put near-black text on a dark background.
+
+   ADD CLASS:  sgs-table-dark   → on the table widget inside a dark section
+   ========================================================================== */
+.sgs-table-dark table { width: 100%; border-collapse: collapse; }
+.sgs-table-dark thead th {
+  background: rgba(255, 255, 255, .09);
+  color: #fff;
+  font-size: .8125rem; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 14px 16px; text-align: left;
+}
+.sgs-table-dark td {
+  color: #F7F3F4;
+  border-bottom: 1px solid rgba(255, 255, 255, .10);
+  padding: 14px 16px;
+}
+.sgs-table-dark tbody tr:nth-child(even) { background: rgba(255, 255, 255, .05); }
+.sgs-table-dark tbody tr:hover { background: rgba(0, 176, 236, .16); }
+
+
+/* ==========================================================================
+   11. OVERLAPPING IMAGE PAIR
+   Main photo with a smaller one overlapping its corner.
+
+   Build: a Container with two Image widgets. On the SECOND image set
+   Advanced ▸ Position: Absolute, then add this class.
+   ADD CLASS:  sgs-float-img
+   ========================================================================== */
+.sgs-float-img {
+  width: 46%;
+  border: 5px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 18px 44px rgba(18, 4, 10, .13);
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .sgs-float-img {
+    position: static !important;
+    width: 100%;
+    border-width: 0;
+    margin-top: 16px;
+  }
+}
+
+
+/* ==========================================================================
+   12. FEATURED / WIDE TILES
+   Loop Grid cannot make one item span two columns.
+
+   PREFERRED: no CSS — use a Posts widget showing 1 latest post above the
+   Loop Grid, and set the Loop Grid's Query ▸ Offset to 1.
+
+   If you would rather do it in CSS, add class sgs-feature-grid to the Loop
+   Grid and this makes the first item span two columns.
+   ========================================================================== */
+.sgs-feature-grid .elementor-grid > .elementor-grid-item:first-child { grid-column: span 2; }
+@media (max-width: 767px) {
+  .sgs-feature-grid .elementor-grid > .elementor-grid-item:first-child { grid-column: span 1; }
+}
+
+
+/* ==========================================================================
+   13. LICENCE CARD (NFP / NSP / ASP(C))
+   ADD CLASS:  sgs-licence   → on each licence Container
+   ========================================================================== */
+.sgs-licence {
+  border-left: 4px solid var(--sgs-green);
+  border-radius: 8px;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.sgs-licence-code {
+  display: inline-block;
+  padding: 7px 12px; border-radius: 4px;
+  background: #EEF7E4; color: #3F6619;
+  font-size: .875rem; font-weight: 700; letter-spacing: .04em;
+}
+
+
+/* ==========================================================================
+   14. FOOTER
+   ADD CLASS:  sgs-footer-legal   → the bottom copyright/links row
+   ========================================================================== */
+.sgs-footer-legal { color: var(--dark-fg-muted); font-size: .8438rem; }
+.sgs-footer-legal a { color: var(--dark-fg-muted); }
+.sgs-footer-legal a:hover { color: var(--sgs-cyan); }
+
+
+/* ==========================================================================
+   15. REMOVE BEFORE LAUNCH
+   The draft's "DRAFT DESIGN PREVIEW" bar. Do not recreate it in WordPress —
+   this is only here so nothing is missed when comparing against the draft.
+   ========================================================================== */
