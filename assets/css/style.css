@@ -220,6 +220,9 @@ li { margin-bottom: var(--space-2); }
   letter-spacing: .01em;
 }
 
+/* Keeps a hyphenated term (e.g. "Ku-Band") from breaking across two lines. */
+.nb { white-space: nowrap; }
+
 /* --------------------------------------------------------------------------
    5. BUTTONS  →  Elementor: Button widget (Global style)
    -------------------------------------------------------------------------- */
@@ -421,11 +424,19 @@ li { margin-bottom: var(--space-2); }
 .hero__strip-item {
   padding: 22px var(--space-5);
   border-left: 1px solid rgba(255, 255, 255, .11);
+  /* bottom-aligned so the labels stay on one line together
+     even when a longer value (e.g. the band list) wraps */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 .hero__strip-item:first-child { border-left: 0; }
 .hero__strip-value {
-  font-family: var(--font-display); font-size: 1.5rem; font-weight: 600;
-  color: #fff; line-height: 1.1;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.1rem + .45vw, 1.5rem);
+  font-weight: 600;
+  color: #fff; line-height: 1.15;
+  text-wrap: balance;
 }
 .hero__strip-label {
   font-size: .8125rem; color: rgba(255, 255, 255, .66);
