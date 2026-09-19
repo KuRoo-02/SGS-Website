@@ -1,0 +1,11 @@
+# Never commit deploy credentials
+.env
+.env.*
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+.vscode/
+.idea/
