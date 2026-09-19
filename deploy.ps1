@@ -44,6 +44,26 @@ foreach ($f in @('index.html','about.html','services.html','news.html','news-art
 Copy-Item (Join-Path $SiteDir 'assets') $Stage -Recurse
 
 Write-Host "Staged $((Get-ChildItem $Stage -Recurse -File).Count) files" -ForegroundColor Cyan
+
+# --- 1b. cache-bust CSS/JS -------------------------------------------------
+# /assets/ is served with max-age=30d and Cloudflare caches it, so an edited
+# stylesheet keeps serving stale until the URL itself changes. Stamp each
+# asset with a hash of its own contents, in the STAGED copies only, so the
+# source tree and the repo keep clean paths.
+function Get-ShortHash([string]$Path) {
+  (Get-FileHash $Path -Algorithm MD5).Hash.Substring(0, 8).ToLower()
+}
+$cssHash = Get-ShortHash (Join-Path $Stage 'assets\css\style.css')
+$jsHash  = Get-ShortHash (Join-Path $Stage 'assets\js\main.js')
+
+Get-ChildItem $Stage -Filter *.html | ForEach-Object {
+  $html = Get-Content $_.FullName -Raw
+  $html = $html -replace 'assets/css/style\.css(\?v=[0-9a-f]+)?', "assets/css/style.css?v=$cssHash"
+  $html = $html -replace 'assets/js/main\.js(\?v=[0-9a-f]+)?',   "assets/js/main.js?v=$jsHash"
+  Set-Content $_.FullName $html -NoNewline -Encoding utf8
+}
+Write-Host "Cache-bust: css=$cssHash js=$jsHash" -ForegroundColor Cyan
+
 tar -czf $Tgz -C $Stage .
 
 # --- 2. upload --------------------------------------------------------------
