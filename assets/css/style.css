@@ -71,7 +71,7 @@
 
   --container: 1240px;
   --container-narrow: 900px;
-  --header-h: 84px;
+  --header-h: 92px;
 }
 
 /* --------------------------------------------------------------------------
@@ -317,7 +317,7 @@ li { margin-bottom: var(--space-2); }
 }
 
 .brand { display: flex; align-items: center; gap: 12px; flex: none; }
-.brand img { height: 42px; width: auto; }
+.brand img { height: 56px; width: auto; }
 .brand__text { display: flex; flex-direction: column; line-height: 1.15; }
 .brand__name {
   font-family: var(--font-display); font-weight: 600; font-size: .9375rem;
@@ -957,7 +957,7 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
 .site-footer li { margin-bottom: 11px; }
 .site-footer a { color: var(--dark-fg-muted); }
 .site-footer a:hover { color: var(--cyan-500); }
-.footer-brand img { height: 44px; width: auto; margin-bottom: var(--space-5); }
+.footer-brand img { height: 58px; width: auto; margin-bottom: var(--space-5); }
 .footer-brand p { color: var(--dark-fg-muted); max-width: 360px; font-size: .9375rem; }
 .footer-contact li { display: flex; gap: 11px; align-items: flex-start; }
 .footer-contact svg { width: 16px; height: 16px; color: var(--cyan-500); flex: none; margin-top: 4px; }
@@ -1011,7 +1011,7 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
 }
 
 @media (max-width: 1024px) {
-  :root { --header-h: 74px; }
+  :root { --header-h: 80px; }
 
   .nav-toggle { display: flex; }
   .header__cta { display: none; }
@@ -1071,7 +1071,7 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
    push the toggle off-screen. Drop to the logo mark alone. */
 @media (max-width: 400px) {
   .brand__text { display: none; }
-  .brand img { height: 38px; }
+  .brand img { height: 46px; }
 }
 
 @media (max-width: 640px) {
