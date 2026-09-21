@@ -86,10 +86,10 @@ labelled with the Elementor feature that replaces it:
 
 ## Quality checks run on this draft
 
-- **Contrast:** automated audit across all 6 pages — 0 failures against WCAG AA
-  (4.5:1 body, 3:1 large text)
+- **Contrast:** automated audit across all 6 pages in **both themes** — 0 failures
+  against WCAG AA (4.5:1 body, 3:1 large text)
 - **Tap targets:** all links, buttons and controls ≥ 44×44px
-- **Responsive:** no horizontal scroll at 390 / 820 / 1440px on any page
+- **Responsive:** no horizontal scroll at 360 / 390 / 768 / 1024 / 1440px on any page, in both themes
 - **Markup:** no unclosed tags, no duplicate IDs, all internal links and anchors resolve,
   all `aria-controls` targets exist, every image has alt text, one `<h1>` per page
 - **JS:** no console errors on any page
@@ -128,8 +128,15 @@ written for the web.
 
 - `assets/img/facility-4.jpg` and `switchboard-2.jpg` are optimised but unused — kept as
   spares for the WordPress build.
-- The maroon **"DRAFT DESIGN PREVIEW"** bar at the top of each page is a review aid.
-  Delete the `<div class="draft-flag">` block before any client-facing deployment.
+- The maroon **"DRAFT DESIGN PREVIEW"** bar at the top of each page is a review aid,
+  and carries the **Light / Dark space** theme switch. Delete the
+  `<div class="draft-flag">` block before any client-facing deployment.
+- **Two themes are included** so the client can compare directions. The choice is
+  remembered across pages (localStorage) and applied before first paint, so there is
+  no flash of the wrong theme. Both pass WCAG AA independently.
+  The switch is **draft-only** — once SGS picks a direction, only that one gets built
+  in Elementor. Building a live light/dark toggle in WordPress is a separate piece of
+  work and is not in scope.
 - Photos were resized to 1400px wide and re-encoded at quality 80 (~150–260KB each, down from
   ~900KB). Convert to WebP during the WordPress build.
 

@@ -1299,3 +1299,295 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
   .float-actions { right: 14px; bottom: 14px; gap: 10px; }
   .float-btn { width: 52px; height: 52px; }
 }
+
+/* ==========================================================================
+   29. THEME SWITCH  (draft-only control in the preview bar)
+   Not part of the WordPress build — it exists so the client can compare the
+   two directions side by side. Once a direction is chosen, only that one
+   gets built in Elementor.
+   ========================================================================== */
+.draft-flag {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--space-5); flex-wrap: wrap;
+}
+.draft-flag__text { opacity: .92; }
+
+.theme-switch {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px;
+  background: rgba(0, 0, 0, .28);
+  border: 1px solid rgba(255, 255, 255, .20);
+  border-radius: 999px;
+  flex: none;
+}
+.theme-switch__btn {
+  appearance: none;
+  min-height: 44px;            /* tap target, same rule as the rest of the site */
+  padding: 6px 16px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: 0; border-radius: 999px;
+  color: rgba(255, 255, 255, .72);
+  font-family: var(--font-display); font-size: .75rem; font-weight: 600;
+  letter-spacing: .02em; cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.theme-switch__btn:hover { color: #fff; }
+.theme-switch__btn[aria-pressed="true"] { background: #fff; color: var(--maroon-800); }
+.theme-switch__btn svg { width: 14px; height: 14px; }
+
+@media (max-width: 640px) {
+  .draft-flag { gap: 10px; padding-block: 9px; }
+  .theme-switch__btn { padding: 6px 12px; font-size: .6875rem; }
+}
+
+/* Logo swaps with the theme */
+.brand__logo--dark { display: none; }
+
+
+/* ==========================================================================
+   30. DARK SPACE THEME
+   Activated by data-theme="dark" on <html>. Because the stylesheet is built
+   on tokens, most of this is a palette swap; the rest are places where a
+   light surface was hard-coded.
+   ========================================================================== */
+:root[data-theme="dark"] {
+  /* Deep space base — cool near-black, warmed slightly toward the brand maroon */
+  --bg:            #06080F;
+  --bg-alt:        #0B0F1C;
+  --surface:       #11162A;
+  --surface-2:     #0A0E1A;
+
+  --fg:            #E9EDF6;
+  --fg-muted:      #A9B3C9;
+  --fg-subtle:     #7E89A3;
+
+  --border:        #1D2440;
+  --border-strong: #2E3758;
+
+  /* On dark, the bright logo colours are the correct ones — they only failed
+     contrast against white. Here they are the most legible option. */
+  --cyan-700:      #3FC8F5;
+  --cyan-800:      #7ADBFA;
+  --cyan-100:      rgba(0, 176, 236, .14);
+  --green-600:     #8FD152;
+  --green-700:     #A8DE77;
+  --green-100:     rgba(126, 191, 65, .14);
+
+  --shadow:    0 4px 14px rgba(0, 0, 0, .5);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, .62);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, .45);
+
+  color-scheme: dark;
+}
+
+/* --- star field ------------------------------------------------------- */
+:root[data-theme="dark"] body { background: var(--bg); }
+:root[data-theme="dark"] body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -2;
+  pointer-events: none;
+  background-image:
+    /* nebulae */
+    radial-gradient(900px 600px at 12% 8%,  rgba(0, 176, 236, .10), transparent 62%),
+    radial-gradient(760px 520px at 88% 32%, rgba(126, 65, 100, .10), transparent 60%),
+    radial-gradient(680px 480px at 70% 88%, rgba(126, 191, 65, .07), transparent 60%),
+    /* stars */
+    radial-gradient(1.4px 1.4px at 12% 14%, rgba(255,255,255,.85), transparent),
+    radial-gradient(1.2px 1.2px at 27% 62%, rgba(255,255,255,.65), transparent),
+    radial-gradient(1.6px 1.6px at 41% 23%, rgba(255,255,255,.80), transparent),
+    radial-gradient(1.1px 1.1px at 58% 77%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.5px 1.5px at 73% 41%, rgba(190,235,255,.80), transparent),
+    radial-gradient(1.2px 1.2px at 86% 68%, rgba(255,255,255,.60), transparent),
+    radial-gradient(1.3px 1.3px at 34% 89%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.7px 1.7px at 64% 11%, rgba(214,245,255,.85), transparent),
+    radial-gradient(1.1px 1.1px at  8% 47%, rgba(255,255,255,.50), transparent),
+    radial-gradient(1.4px 1.4px at 93% 19%, rgba(255,255,255,.70), transparent),
+    radial-gradient(1.2px 1.2px at 48% 52%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1.5px 1.5px at 19% 79%, rgba(200,240,255,.65), transparent);
+  background-repeat: no-repeat, no-repeat, no-repeat,
+                     repeat, repeat, repeat, repeat, repeat, repeat,
+                     repeat, repeat, repeat, repeat, repeat, repeat;
+  background-size: auto, auto, auto,
+                   620px 620px, 540px 540px, 700px 700px, 480px 480px,
+                   660px 660px, 580px 580px, 720px 720px, 500px 500px,
+                   640px 640px, 560px 560px, 680px 680px, 600px 600px;
+}
+
+/* Sections become translucent panels so the star field reads through them */
+:root[data-theme="dark"] .section--light { background: rgba(255, 255, 255, .030); }
+:root[data-theme="dark"] .section--tint  { background: rgba(255, 255, 255, .015); }
+:root[data-theme="dark"] .section--dark {
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(0, 176, 236, .17), transparent 62%),
+    radial-gradient(760px 420px at 92% 108%, rgba(126, 191, 65, .12), transparent 60%),
+    linear-gradient(160deg, #0D1124 0%, #05070E 100%);
+}
+
+/* --- header ------------------------------------------------------------ */
+:root[data-theme="dark"] .site-header {
+  background: rgba(8, 11, 22, .86);
+  border-bottom-color: var(--border);
+}
+:root[data-theme="dark"] .site-header.is-stuck { box-shadow: 0 6px 26px rgba(0, 0, 0, .55); }
+:root[data-theme="dark"] .brand__name { color: var(--fg); }
+:root[data-theme="dark"] .brand__logo--light { display: none; }
+:root[data-theme="dark"] .brand__logo--dark  { display: block; }
+:root[data-theme="dark"] .nav__link { color: var(--fg-muted); }
+:root[data-theme="dark"] .nav__link:hover { color: #fff; background: rgba(255, 255, 255, .06); }
+:root[data-theme="dark"] .nav__link.is-active { color: #fff; }
+:root[data-theme="dark"] .nav-toggle { color: var(--fg); border-color: var(--border-strong); }
+:root[data-theme="dark"] .nav { background: var(--bg-alt); border-top-color: var(--border); }
+:root[data-theme="dark"] .nav__link.is-active { background: rgba(0, 176, 236, .12); }
+
+/* --- headings and prose ------------------------------------------------- */
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] h5 { color: var(--fg); }
+:root[data-theme="dark"] .prose { color: #D3DAE8; }
+:root[data-theme="dark"] .prose blockquote { color: var(--fg); }
+:root[data-theme="dark"] .prose hr { border-top-color: var(--border); }
+
+/* --- surfaces ----------------------------------------------------------- */
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .post-card,
+:root[data-theme="dark"] .aside-card,
+:root[data-theme="dark"] .form-card,
+:root[data-theme="dark"] .table-wrap,
+:root[data-theme="dark"] .accordion,
+:root[data-theme="dark"] .licence-card,
+:root[data-theme="dark"] .map-embed,
+:root[data-theme="dark"] .pagination a,
+:root[data-theme="dark"] .pagination span,
+:root[data-theme="dark"] .filter-chip,
+:root[data-theme="dark"] .pill,
+:root[data-theme="dark"] .share a {
+  background: rgba(255, 255, 255, .045);
+  border-color: var(--border);
+  color: var(--fg-muted);
+}
+:root[data-theme="dark"] .card:hover,
+:root[data-theme="dark"] .post-card:hover { border-color: rgba(63, 200, 245, .40); }
+:root[data-theme="dark"] .post-card__body h3 a { color: var(--fg); }
+:root[data-theme="dark"] .post-card__body h3 a:hover { color: var(--cyan-700); }
+:root[data-theme="dark"] .aside-card li a { color: var(--fg); }
+:root[data-theme="dark"] .aside-card li a:hover { color: var(--cyan-700); }
+:root[data-theme="dark"] .aside-card li { border-bottom-color: var(--border); }
+:root[data-theme="dark"] .accordion__item + .accordion__item { border-top-color: var(--border); }
+:root[data-theme="dark"] .accordion__trigger { color: var(--fg); }
+:root[data-theme="dark"] .accordion__trigger:hover { background: rgba(255, 255, 255, .05); color: var(--cyan-700); }
+:root[data-theme="dark"] .filter-chip[aria-pressed="true"],
+:root[data-theme="dark"] .pagination .is-current {
+  background: var(--cyan-700); border-color: var(--cyan-700); color: #05070E;
+}
+:root[data-theme="dark"] .licence-card { border-left-color: var(--green-500); }
+:root[data-theme="dark"] .licence-card__code { background: rgba(126, 191, 65, .16); color: var(--green-700); }
+:root[data-theme="dark"] .licence-card h4 { color: var(--fg); }
+
+/* stats */
+:root[data-theme="dark"] .stats { background: var(--border); border-color: var(--border); }
+:root[data-theme="dark"] .stat { background: rgba(255, 255, 255, .04); }
+:root[data-theme="dark"] .stat__value { color: #fff; }
+:root[data-theme="dark"] .stat__value span { color: var(--cyan-700); }
+
+/* figures and galleries */
+:root[data-theme="dark"] .figure,
+:root[data-theme="dark"] .gallery__item { background: var(--surface-2); }
+:root[data-theme="dark"] .figure figcaption {
+  background: rgba(255, 255, 255, .04); border-top-color: var(--border); color: var(--fg-muted);
+}
+:root[data-theme="dark"] .media-stack__float { border-color: var(--surface); }
+:root[data-theme="dark"] .timeline li::before { border-color: var(--bg); }
+
+/* tables */
+:root[data-theme="dark"] .spec-table th { color: var(--fg-muted); }
+:root[data-theme="dark"] .spec-table td { color: var(--fg); }
+:root[data-theme="dark"] .spec-table th,
+:root[data-theme="dark"] .spec-table td,
+:root[data-theme="dark"] .data-table td { border-bottom-color: var(--border); }
+:root[data-theme="dark"] .data-table thead th { background: rgba(255, 255, 255, .09); }
+:root[data-theme="dark"] .data-table td { color: var(--fg); }
+:root[data-theme="dark"] .data-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, .04); }
+:root[data-theme="dark"] .data-table tbody tr:hover { background: rgba(0, 176, 236, .14); }
+
+/* forms */
+:root[data-theme="dark"] .field label { color: var(--fg); }
+/* the required-field asterisk is maroon in light mode — invisible on dark */
+:root[data-theme="dark"] .field .req,
+:root[data-theme="dark"] .req { color: #FF9BB0; }
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field select,
+:root[data-theme="dark"] .field textarea {
+  background: rgba(255, 255, 255, .05);
+  border-color: var(--border-strong);
+  color: var(--fg);
+}
+:root[data-theme="dark"] .field input::placeholder,
+:root[data-theme="dark"] .field textarea::placeholder { color: var(--fg-subtle); }
+:root[data-theme="dark"] .form-note { background: rgba(0, 176, 236, .12); color: var(--cyan-800); }
+:root[data-theme="dark"] .contact-item { border-bottom-color: var(--border); }
+:root[data-theme="dark"] .contact-item h4 { color: var(--fg); }
+:root[data-theme="dark"] .contact-item__icon { background: rgba(0, 176, 236, .14); color: var(--cyan-700); }
+:root[data-theme="dark"] .map-embed__fallback {
+  color: var(--fg-muted);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+}
+:root[data-theme="dark"] .map-embed__fallback strong { color: var(--fg); }
+
+/* card icon chips */
+:root[data-theme="dark"] .card__icon { background: rgba(0, 176, 236, .14); color: var(--cyan-700); }
+:root[data-theme="dark"] .card__icon--green { background: rgba(126, 191, 65, .14); color: var(--green-600); }
+:root[data-theme="dark"] .card__icon--maroon { background: rgba(212, 72, 110, .14); color: #E77A9B; }
+:root[data-theme="dark"] .card__num { color: var(--cyan-700); }
+
+/* buttons */
+:root[data-theme="dark"] .btn--primary {
+  background: var(--cyan-700); color: #04121A;
+  box-shadow: 0 6px 20px rgba(0, 176, 236, .22);
+}
+:root[data-theme="dark"] .btn--primary:hover { background: var(--cyan-800); color: #04121A; }
+:root[data-theme="dark"] .btn--maroon { background: #8E1A38; color: #fff; }
+:root[data-theme="dark"] .btn--maroon:hover { background: #A62245; color: #fff; }
+:root[data-theme="dark"] .btn--ghost { color: var(--fg); border-color: var(--border-strong); }
+:root[data-theme="dark"] .btn--ghost:hover { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+:root[data-theme="dark"] .link-arrow { color: var(--cyan-700); }
+:root[data-theme="dark"] .eyebrow { color: var(--cyan-700); }
+:root[data-theme="dark"] .eyebrow--green { color: var(--green-600); }
+
+/* news tags keep enough contrast on dark */
+:root[data-theme="dark"] .post-tag--news { background: #0C7AA6; }
+:root[data-theme="dark"] .post-tag--tech { background: #8E1A38; }
+:root[data-theme="dark"] .post-tag--event { background: #4F7F22; }
+
+/* footer already dark; lift it off the page background */
+:root[data-theme="dark"] .site-footer { background: rgba(0, 0, 0, .45); border-top: 1px solid var(--border); }
+
+/* hero scrim deepens slightly so the headline holds over the photo */
+:root[data-theme="dark"] .hero__scrim {
+  background:
+    linear-gradient(100deg, rgba(5, 7, 16, .95) 0%, rgba(5, 7, 16, .84) 38%,
+                    rgba(5, 7, 16, .50) 72%, rgba(5, 7, 16, .38) 100%),
+    linear-gradient(to top, rgba(5, 7, 16, .80) 0%, transparent 42%);
+}
+:root[data-theme="dark"] .page-hero {
+  background:
+    radial-gradient(900px 400px at 8% 0%, rgba(0, 176, 236, .20), transparent 60%),
+    radial-gradient(620px 340px at 96% 100%, rgba(126, 191, 65, .13), transparent 60%),
+    linear-gradient(150deg, #0D1124 0%, #05070E 100%);
+}
+:root[data-theme="dark"] .cta-band {
+  background:
+    radial-gradient(760px 340px at 82% 12%, rgba(0, 176, 236, .26), transparent 62%),
+    radial-gradient(560px 320px at 6% 96%, rgba(126, 191, 65, .17), transparent 60%),
+    linear-gradient(120deg, #131A33 0%, #05070E 100%);
+}
+
+/* photos sit a touch softer against the dark page */
+:root[data-theme="dark"] .figure img,
+:root[data-theme="dark"] .media-stack img,
+:root[data-theme="dark"] .gallery__item img,
+:root[data-theme="dark"] .post-card__media img { filter: brightness(.93) saturate(1.04); }
+:root[data-theme="dark"] .hero__bg { filter: brightness(.82) saturate(1.05); }

@@ -11,6 +11,7 @@
      tabs()         → Elementor Tabs widget
      lightbox()     → Elementor Gallery widget lightbox
      year()         → Elementor shortcode / dynamic tag
+     themeSwitch()  → DRAFT ONLY — not built in WordPress
    ========================================================================== */
 (function () {
   'use strict';
@@ -242,6 +243,40 @@
     });
   }
 
+  /* ---- Theme switch (draft only) ----------------------------------------
+     Lets the client compare the light and dark-space directions. The chosen
+     theme is remembered across pages. This is NOT part of the WordPress
+     build — once a direction is picked, only that one gets built. ---------- */
+  function themeSwitch() {
+    var btns = document.querySelectorAll('[data-theme-set]');
+    if (!btns.length) return;
+
+    function apply(theme, persist) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      btns.forEach(function (b) {
+        b.setAttribute('aria-pressed',
+          String(b.getAttribute('data-theme-set') === theme));
+      });
+      if (persist) {
+        try { localStorage.setItem('sgs-theme', theme); } catch (e) {}
+      }
+    }
+
+    var stored = 'light';
+    try { stored = localStorage.getItem('sgs-theme') || 'light'; } catch (e) {}
+    apply(stored === 'dark' ? 'dark' : 'light', false);
+
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        apply(b.getAttribute('data-theme-set'), true);
+      });
+    });
+  }
+
   /* ---- Current year ------------------------------------------------------ */
   function year() {
     document.querySelectorAll('[data-year]').forEach(function (el) {
@@ -250,6 +285,7 @@
   }
 
   function init() {
+    themeSwitch();
     mobileNav(); stickyHeader(); reveal(); counters();
     accordions(); tabs(); lightbox(); demoForm(); year();
   }
