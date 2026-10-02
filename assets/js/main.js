@@ -12,6 +12,7 @@
      lightbox()     → Elementor Gallery widget lightbox
      year()         → Elementor shortcode / dynamic tag
      themeSwitch()  → DRAFT ONLY — not built in WordPress
+     preloader()    → WP: a preloader plugin, or ~30 lines in a child theme
    ========================================================================== */
 (function () {
   'use strict';
@@ -243,6 +244,48 @@
     });
   }
 
+  /* ---- Preloader ---------------------------------------------------------
+     Hides as soon as the page is ready, with a floor so it never flashes and
+     a ceiling so a slow asset cannot hold the visitor hostage. Shown once per
+     browser session. The CSS also fades it out at 3s on its own, so a failed
+     script can never leave the overlay stuck. ------------------------------ */
+  function preloader() {
+    var el = document.getElementById('preloader');
+    if (!el) return;
+
+    var seen = false;
+    try { seen = sessionStorage.getItem('sgs-seen') === '1'; } catch (e) {}
+
+    // Returning within the session, or reduced motion: never show it.
+    if (seen || reduceMotion) {
+      el.parentNode.removeChild(el);
+      return;
+    }
+
+    var MIN = 650;    // below this it reads as a flicker
+    var MAX = 2600;   // hard ceiling, whatever the network is doing
+    var start = Date.now();
+    var gone = false;
+
+    function dismiss() {
+      if (gone) return;
+      gone = true;
+      try { sessionStorage.setItem('sgs-seen', '1'); } catch (e) {}
+      el.classList.add('is-done');
+      setTimeout(function () {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 600);
+    }
+
+    function ready() {
+      setTimeout(dismiss, Math.max(0, MIN - (Date.now() - start)));
+    }
+
+    if (document.readyState === 'complete') ready();
+    else window.addEventListener('load', ready);
+    setTimeout(dismiss, MAX);
+  }
+
   /* ---- Theme switch (draft only) ----------------------------------------
      Lets the client compare the light and dark-space directions. The chosen
      theme is remembered across pages. This is NOT part of the WordPress
@@ -285,6 +328,7 @@
   }
 
   function init() {
+    preloader();
     themeSwitch();
     mobileNav(); stickyHeader(); reveal(); counters();
     accordions(); tabs(); lightbox(); demoForm(); year();

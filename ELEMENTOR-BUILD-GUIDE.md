@@ -247,6 +247,45 @@ to `#12040A` and stack one Elementor "Background Overlay" radial on top. It is ~
 
 ---
 
+## 6b. Preloader (optional)
+
+The draft shows a "signal acquisition" splash before the first page of a session:
+SGS mark, expanding cyan rings, an indeterminate bar. Reference implementation is
+section 31 of the draft's `style.css` plus `preloader()` in `main.js`.
+
+**Elementor has no preloader widget.** Three routes, cheapest first:
+
+1. **A plugin** — "Preloader Plus" is the usual pick; supports a custom logo and
+   colours, and has a WooCommerce-free lite version
+2. **Child theme** — paste the draft's CSS into Site Settings ▸ Custom CSS and the
+   JS into a `wp_footer` hook in `functions.php` (~30 lines). Closest to the draft
+3. **Code-snippet plugin** (WPCode) if you would rather not keep a child theme
+
+### Non-negotiables, whichever route
+
+These are in the draft for good reasons — do not drop them:
+
+- **A CSS-only fade-out on a timer** (3s in the draft) so a blocked or failed script
+  can never leave a visitor on a blank overlay. Most preloader plugins hide on the
+  JS `load` event only; if that script fails, the site is bricked for that visitor
+- **A hard maximum** (2.6s in the draft). Never wait indefinitely for a slow asset —
+  on shared hosting that will happen
+- **Once per session**, not per page view. `sessionStorage`, not a cookie
+- **Skip on `prefers-reduced-motion`**
+- Content stays in the DOM behind it, so crawlers and screen readers are unaffected
+
+### Think about whether you want one at all
+
+A preloader **adds** perceived wait and delays Largest Contentful Paint, which is a
+Core Web Vitals metric Google measures. On shared cPanel hosting — already the slow
+part — you are adding delay on top of real delay.
+
+It buys a premium first impression, which is why aerospace and defence brands use
+them. It costs measurable load time on every new session. Worth showing SGS both
+with and without before committing.
+
+---
+
 ## 7. Content management — what SGS must be able to edit
 
 The brief commits to SGS updating routine content without developer help. That constrains how you
