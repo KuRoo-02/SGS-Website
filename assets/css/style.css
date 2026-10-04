@@ -1802,3 +1802,162 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
 @media (prefers-reduced-motion: reduce) {
   .vfeature__media video { display: none; }
 }
+
+/* ==========================================================================
+   33. PRELOADER — orbital acquisition sequence
+   Replaces the plain pulse. Over the 5s hold it plays a sequence rather
+   than looping: orbits draw themselves in, satellites begin tracking,
+   signal waves answer, status advances, link locks.
+
+   Pure HTML + CSS + SVG. No canvas, no library, no JS beyond the existing
+   dismiss timer — so it pastes straight into a WordPress preloader
+   plugin's custom-HTML field, or a child theme's wp_footer.
+
+   Timing is driven by --preload-dur on .preloader; change that one value
+   and the whole sequence rescales.
+   ========================================================================== */
+
+.preloader__stage {
+  position: relative;
+  width: min(320px, 76vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.pl-sys { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* the whole system drifts, so nothing looks locked to the grid */
+.pl-sys__rot {
+  transform-origin: 160px 160px;
+  animation: pl-drift 38s linear infinite;
+}
+@keyframes pl-drift { to { transform: rotate(360deg); } }
+
+/* ---- orbit rings -------------------------------------------------------- */
+.pl-orbit {
+  transform-origin: 160px 160px;
+  transform: rotate(var(--tilt));
+}
+.pl-orbit__path,
+.pl-orbit__sat { fill: none; vector-effect: non-scaling-stroke; }
+
+/* pathLength="100" normalises every ellipse, so dash values are percentages
+   and the same timings work whatever the radii */
+.pl-orbit__path {
+  stroke: rgba(120, 200, 255, .22);
+  stroke-width: 1;
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  animation: pl-draw 1.1s var(--ease) forwards;
+  animation-delay: calc(.25s + var(--i) * .18s);
+}
+@keyframes pl-draw { to { stroke-dashoffset: 0; } }
+
+/* a short bright dash travelling the ring = a satellite on track.
+   Riding the path itself means no transform maths to get wrong. */
+.pl-orbit__sat {
+  stroke: var(--cyan-500);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 7 93;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(0, 176, 236, .95));
+  animation:
+    pl-track calc(2.6s + var(--i) * .7s) linear infinite,
+    pl-fade .6s ease forwards;
+  animation-delay: calc(1s + var(--i) * .22s), calc(1s + var(--i) * .22s);
+}
+@keyframes pl-track { to { stroke-dashoffset: 0; } }
+@keyframes pl-fade  { to { opacity: 1; } }
+
+/* ---- signal waves from the hub ------------------------------------------ */
+.pl-wave {
+  fill: none;
+  stroke: var(--cyan-500);
+  stroke-width: 1.3;
+  transform-origin: 160px 160px;
+  opacity: 0;
+  animation: pl-wave 2.6s cubic-bezier(.22, .61, .36, 1) infinite;
+  animation-delay: .9s;
+}
+@keyframes pl-wave {
+  0%   { transform: scale(.4); opacity: 0; }
+  12%  { opacity: .85; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+
+/* ---- logo --------------------------------------------------------------- */
+.preloader__logo {
+  position: relative; z-index: 2;
+  width: 108px; height: auto;
+  opacity: 0;
+  transform: scale(.86);
+  animation:
+    pl-logo-in .9s cubic-bezier(.22, .61, .36, 1) .1s forwards,
+    pl-logo-breathe 3.2s ease-in-out 1s infinite;
+}
+@keyframes pl-logo-in {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes pl-logo-breathe {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(0, 176, 236, 0)); }
+  50%      { filter: drop-shadow(0 0 16px rgba(0, 176, 236, .55)); }
+}
+
+/* ---- status line: three stacked labels, cross-faded ---------------------- */
+.preloader__text {
+  position: relative;
+  height: 1.2em;
+  min-width: 230px;
+  text-align: center;
+}
+.preloader__text span {
+  position: absolute; inset: 0;
+  opacity: 0;
+  animation: pl-status var(--preload-dur) linear forwards;
+}
+.preloader__text span:nth-child(1) { animation-name: pl-status-1; }
+.preloader__text span:nth-child(2) { animation-name: pl-status-2; }
+.preloader__text span:nth-child(3) { animation-name: pl-status-3; }
+
+@keyframes pl-status-1 {
+  0%, 2%    { opacity: 0; }
+  8%, 30%   { opacity: 1; }
+  36%, 100% { opacity: 0; }
+}
+@keyframes pl-status-2 {
+  0%, 36%   { opacity: 0; }
+  42%, 64%  { opacity: 1; }
+  70%, 100% { opacity: 0; }
+}
+@keyframes pl-status-3 {
+  0%, 70%   { opacity: 0; }
+  76%, 100% { opacity: 1; }
+}
+/* the final state reads as confirmation, not progress */
+.preloader__text span:nth-child(3) { color: var(--green-500); }
+
+/* ---- lock flash at the end ---------------------------------------------- */
+.preloader__stage::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--green-500);
+  opacity: 0;
+  transform: scale(.75);
+  animation: pl-lock .9s cubic-bezier(.22, .61, .36, 1) forwards;
+  /* fires at 76% of the hold, with the "Link established" label */
+  animation-delay: calc(var(--preload-dur) * .76);
+}
+@keyframes pl-lock {
+  0%   { opacity: 0;   transform: scale(.75); }
+  35%  { opacity: .85; }
+  100% { opacity: 0;   transform: scale(1.12); }
+}
+
+/* ---- motion off: a single still frame, no sequence ---------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .preloader { display: none !important; }
+}

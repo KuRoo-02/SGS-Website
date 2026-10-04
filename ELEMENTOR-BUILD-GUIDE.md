@@ -249,9 +249,25 @@ to `#12040A` and stack one Elementor "Background Overlay" radial on top. It is ~
 
 ## 6b. Preloader (optional)
 
-The draft shows a "signal acquisition" splash before the first page of a session:
-SGS mark, expanding cyan rings, an indeterminate bar. Reference implementation is
-section 31 of the draft's `style.css` plus `preloader()` in `main.js`.
+The draft shows an orbital-acquisition sequence before the first page of a session:
+the SGS mark with three tilted orbit rings that draw themselves in, satellites that
+begin tracking them, signal waves from the hub, a status line advancing
+"Acquiring signal" -> "Establishing uplink" -> "Link established", a determinate
+progress bar and a green lock flash to finish.
+
+Reference implementation is sections 31 and 33 of the draft's `style.css`, plus
+`preloader()` in `main.js`.
+
+**It is pure HTML + CSS + SVG.** No canvas, no library, no per-frame JavaScript, so
+it pastes straight into a preloader plugin's custom-HTML field or a child theme's
+`wp_footer`. The only JavaScript is the existing dismiss timer.
+
+The satellites ride the ring paths using `stroke-dasharray` on an ellipse with
+`pathLength="100"` — which normalises every ring so the same dash timings work
+whatever the radii, and means there is no transform maths to get wrong.
+
+All timing derives from `--preload-dur` on `.preloader`. Change that one value and
+the rings, satellites, status line, bar and lock flash all rescale together.
 
 **Elementor has no preloader widget.** Three routes, cheapest first:
 
