@@ -262,8 +262,17 @@
       return;
     }
 
-    var MIN = 650;    // below this it reads as a flicker
-    var MAX = 2600;   // hard ceiling, whatever the network is doing
+    // Duration comes from the CSS custom property, so it is defined in one
+    // place (--preload-dur on .preloader) rather than in two that can drift.
+    var MIN = 5000;
+    try {
+      var raw = getComputedStyle(el).getPropertyValue('--preload-dur').trim();
+      if (raw) {
+        var n = parseFloat(raw);
+        if (!isNaN(n) && n > 0) MIN = raw.indexOf('ms') > -1 ? n : n * 1000;
+      }
+    } catch (e) {}
+    var MAX = MIN + 1200;   // hard ceiling, whatever the network is doing
     var start = Date.now();
     var gone = false;
 

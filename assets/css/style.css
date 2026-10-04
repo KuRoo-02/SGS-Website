@@ -1605,6 +1605,10 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
    - Shows once per browser session, not on every page view.
    ========================================================================== */
 .preloader {
+  /* Duration lives here only. main.js reads this value, so changing this
+     one number changes the whole preloader. */
+  --preload-dur: 5s;
+
   position: fixed; inset: 0; z-index: 9999;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -1613,8 +1617,9 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
     radial-gradient(900px 600px at 50% 42%, rgba(0, 176, 236, .10), transparent 62%),
     radial-gradient(700px 500px at 78% 78%, rgba(126, 191, 65, .07), transparent 60%),
     linear-gradient(160deg, #0D1124 0%, #05070E 100%);
-  /* Fires even if JS never runs. JS normally removes it well before this. */
-  animation: sgs-preload-out .55s var(--ease) 3s forwards;
+  /* Fires even if JS never runs. Sits just past the JS ceiling so the script
+     normally wins; this is the net, not the mechanism. */
+  animation: sgs-preload-out .55s var(--ease) 6.6s forwards;
 }
 .preloader.is-done { animation: sgs-preload-out .55s var(--ease) forwards; }
 
@@ -1662,20 +1667,25 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
   color: rgba(255, 255, 255, .62);
 }
 .preloader__bar {
-  width: 168px; height: 2px;
+  width: 230px; height: 2px;
   background: rgba(255, 255, 255, .13);
   border-radius: 2px; overflow: hidden;
 }
 .preloader__bar::after {
   content: "";
-  display: block; width: 40%; height: 100%;
+  display: block; width: 100%; height: 100%;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--cyan-500), transparent);
-  animation: sgs-preload-sweep 1.15s var(--ease) infinite;
+  background: linear-gradient(90deg, var(--cyan-700), var(--cyan-500));
+  box-shadow: 0 0 8px rgba(0, 176, 236, .55);
+  transform-origin: left center;
+  transform: scaleX(0);
+  /* linear: a timed bar should finish exactly when the wait does, not
+     race to 95% and then appear stuck */
+  animation: sgs-preload-fill var(--preload-dur) linear forwards;
 }
-@keyframes sgs-preload-sweep {
-  from { transform: translateX(-100%); }
-  to   { transform: translateX(350%); }
+@keyframes sgs-preload-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 /* Nothing animates, nothing blocks. */
