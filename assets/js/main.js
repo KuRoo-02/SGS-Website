@@ -13,6 +13,7 @@
      year()         → Elementor shortcode / dynamic tag
      themeSwitch()  → DRAFT ONLY — not built in WordPress
      preloader()    → WP: a preloader plugin, or ~30 lines in a child theme
+     videoFeatures()→ Elementor Container ▸ Background ▸ Video (+ lazy/pause)
    ========================================================================== */
 (function () {
   'use strict';
@@ -244,6 +245,58 @@
     });
   }
 
+  /* ---- Video features ----------------------------------------------------
+     Nothing downloads until the row is near the viewport, and playback
+     pauses once it leaves — so an unseen clip costs nothing in bandwidth,
+     CPU or battery. The poster frame holds the slot meanwhile.
+     WP equivalent: Container ▸ Background ▸ Video, plus this behaviour. ---- */
+  function videoFeatures() {
+    var vids = document.querySelectorAll('video[data-src]');
+    if (!vids.length) return;
+
+    // Reduced motion: leave the poster, never fetch the video at all.
+    if (reduceMotion) {
+      vids.forEach(function (v) { v.remove(); });
+      return;
+    }
+
+    function load(v) {
+      if (v.dataset.loaded) return;
+      v.dataset.loaded = '1';
+      v.src = v.dataset.src;
+      v.addEventListener('playing', function () { v.classList.add('is-playing'); });
+      // Autoplay can still be refused; the poster simply stays.
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    if (!('IntersectionObserver' in window)) { vids.forEach(load); return; }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          load(v);
+          if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        } else if (!v.paused) {
+          v.pause();
+        }
+      });
+    }, { rootMargin: '220px 0px', threshold: 0.01 });
+
+    vids.forEach(function (v) { io.observe(v); });
+
+    // Don't burn cycles rendering video in a background tab.
+    document.addEventListener('visibilitychange', function () {
+      vids.forEach(function (v) {
+        if (document.hidden) { v.pause(); }
+        else if (v.dataset.loaded && v.getBoundingClientRect().top < innerHeight) {
+          var p = v.play(); if (p && p.catch) p.catch(function () {});
+        }
+      });
+    });
+  }
+
   /* ---- Preloader ---------------------------------------------------------
      Hides as soon as the page is ready, with a floor so it never flashes and
      a ceiling so a slow asset cannot hold the visitor hostage. Shown once per
@@ -338,6 +391,7 @@
 
   function init() {
     preloader();
+    videoFeatures();
     themeSwitch();
     mobileNav(); stickyHeader(); reveal(); counters();
     accordions(); tabs(); lightbox(); demoForm(); year();

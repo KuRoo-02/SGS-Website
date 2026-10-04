@@ -1692,3 +1692,113 @@ a.pill:hover { border-color: var(--cyan-500); color: var(--cyan-700); }
 @media (prefers-reduced-motion: reduce) {
   .preloader { display: none !important; }
 }
+
+/* ==========================================================================
+   32. VIDEO FEATURE BAND
+   Looping background video with an overlapping text panel, alternating
+   sides — the Kratos treatment, on an SGS budget.
+
+   Every clip is a seamless boomerang loop (forward + reversed), muted,
+   autoplaying and lazy-loaded: nothing downloads until the row is near the
+   viewport, and playback pauses once it leaves. See videoFeatures() in
+   main.js. A poster frame shows instantly so the slot is never empty.
+
+   WordPress: Elementor's Video widget does background video natively
+   (Container ▸ Background ▸ Video). The lazy-load and pause-offscreen
+   behaviour is the part worth carrying over.
+   ========================================================================== */
+.vfeature { position: relative; overflow: hidden; }
+
+.vfeature__row {
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  align-items: center;
+}
+.vfeature__row + .vfeature__row { margin-top: clamp(48px, 6vw, 88px); }
+
+/* alternate sides, like the reference */
+.vfeature__row--flip { grid-template-columns: .92fr 1.08fr; }
+.vfeature__row--flip .vfeature__media { order: 2; }
+.vfeature__row--flip .vfeature__panel {
+  order: 1;
+  margin-left: 0;
+  margin-right: -11%;
+}
+
+/* ---- media -------------------------------------------------------------- */
+.vfeature__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #05070E;
+  /* chamfered top-right corner */
+  clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .45);
+}
+.vfeature__media video,
+.vfeature__media img.vfeature__poster {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.vfeature__media video { opacity: 0; transition: opacity .6s var(--ease); }
+.vfeature__media video.is-playing { opacity: 1; }
+
+/* keeps text legible where the panel overlaps the footage */
+.vfeature__media::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(5,7,14,.15) 0%, rgba(5,7,14,.05) 45%, rgba(5,7,14,.55) 100%);
+  pointer-events: none;
+}
+.vfeature__row--flip .vfeature__media::after {
+  background: linear-gradient(270deg, rgba(5,7,14,.15) 0%, rgba(5,7,14,.05) 45%, rgba(5,7,14,.55) 100%);
+}
+
+/* ---- panel -------------------------------------------------------------- */
+.vfeature__panel {
+  position: relative; z-index: 2;
+  margin-left: -11%;
+  padding: clamp(26px, 3vw, 40px);
+  background: rgba(8, 12, 26, .80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .40);
+}
+.vfeature__panel h3 {
+  color: #fff;
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.05rem);
+  line-height: 1.18;
+  margin-bottom: var(--space-4);
+}
+.vfeature__panel p { color: var(--dark-fg-muted); }
+/* bare inline link in the panel is only 25px tall; padding grows the tap
+   target to 44px and the negative margin keeps the layout unchanged */
+.vfeature__panel .link-arrow { padding-block: 10px; margin-block: -10px; }
+
+/* ---- responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .vfeature__row,
+  .vfeature__row--flip { grid-template-columns: 1fr; }
+  .vfeature__row--flip .vfeature__media { order: 0; }
+  .vfeature__row--flip .vfeature__panel { order: 0; margin-right: 0; }
+  .vfeature__panel {
+    margin-left: 0;
+    margin-top: -46px;
+    width: calc(100% - 32px);
+    margin-inline: auto;
+  }
+  .vfeature__media { clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); }
+}
+@media (max-width: 480px) {
+  .vfeature__panel { margin-top: -28px; width: calc(100% - 16px); }
+}
+
+/* Motion off: the poster frame carries the image, nothing animates. */
+@media (prefers-reduced-motion: reduce) {
+  .vfeature__media video { display: none; }
+}
