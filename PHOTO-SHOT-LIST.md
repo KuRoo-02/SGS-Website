@@ -2,16 +2,29 @@
 
 Written for: whoever takes the replacement photos at the Rantau site.
 
-The site currently uses the 18 photos supplied in `Materials/Facility Photos/`.
-Four of them no longer reflect the facility, and one shot does not exist yet.
-**These cannot be fixed by editing — the equipment in question was installed after
-the existing photos were taken.** New photographs are required.
+**Updated 5 October 2026 — nine new photographs were supplied and are now live.**
+
+Two of the gaps below are closed:
+
+- **Rooftop SPACESAIL antenna — DONE.** `spacesail-radome.jpg` now appears in the
+  About gallery and on Services section 02, which previously illustrated the LEO
+  story with a geostationary dish because no LEO photo existed.
+- **Antenna view — DONE.** `antenna-array.jpg` shows the rooftop array and replaces
+  the older antenna shot on the home page.
+
+The new set also brings something the original 18 lacked entirely: **people at
+work.** Engineers at the racks, RF testing, the monitoring room, the office in use.
+An all-empty-rooms gallery reads as a building; these read as an operation.
+
+Still outstanding: the **telco room** and **server room** interior shots, which
+predate the added racks. Those cannot be fixed by editing — the equipment was
+installed after the photos were taken.
 
 ---
 
 ## What needs reshooting
 
-### 1. Antenna view — platform 2  ·  REPLACE
+### 1. Antenna view — platform 2  ·  DONE (5 Oct 2026)
 Two antennas have since been added on platform 2 (one **Ku-band**, one **C-band**).
 The current photos predate them.
 
@@ -23,7 +36,7 @@ The current photos predate them.
 | Orientation | **Landscape**, 4:3 |
 | Note | `antenna-2.jpg` is the featured image on the lead news article, so it wants to be the strongest of the set |
 
-### 2. Telco room  ·  REPLACE
+### 2. Telco room  ·  STILL OUTSTANDING
 Two additional racks have been installed.
 
 | | |
@@ -33,7 +46,7 @@ Two additional racks have been installed.
 | Shot | Down the aisle so the **full rack line including the two new racks** is visible |
 | Orientation | **Landscape**, 4:3 |
 
-### 3. Server room  ·  REPLACE
+### 3. Server room  ·  STILL OUTSTANDING
 Two Navalista racks have been added.
 
 | | |
@@ -43,7 +56,7 @@ Two Navalista racks have been added.
 | Shot | Aisle view including the **two new Navalista racks** |
 | Orientation | **Landscape**, 4:3 |
 
-### 4. Rooftop — SPACESAIL antenna  ·  NEW
+### 4. Rooftop — SPACESAIL antenna  ·  DONE (5 Oct 2026)
 No rooftop photo exists in the supplied materials.
 
 | | |
