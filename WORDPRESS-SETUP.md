@@ -285,3 +285,59 @@ If you build on a staging subdomain first (e.g. `staging.clientdomain.com`):
 - [ ] GA4 firing (check Realtime)
 - [ ] Backups scheduled and one restore tested
 - [ ] SGS's own admin account created, with the agency account kept separate
+
+---
+
+## SEO, structured data and analytics
+
+Built by `tools/build_seo.py`. Re-run it after changing page copy; it is
+idempotent and rewrites the snippets in place.
+
+### Where it lives
+
+All of it is in **Elementor → Custom Code**, one snippet per page plus two
+shared ones, each scoped with display conditions:
+
+| Snippet | Applies to | Carries |
+|---|---|---|
+| `SGS SEO - site wide` | every page | Organization + WebSite JSON-LD, `og:site_name`, `og:locale`, `twitter:card`, theme colour |
+| `SGS SEO - home` … `- contact` | that one page | meta description, Open Graph, Twitter card, BreadcrumbList |
+| `SGS SEO - articles` | single posts | `og:type=article` and a branded share image |
+| `SGS analytics` | every page | GA4 tag and Search Console verification — only exists once the IDs are set |
+
+To edit a description, open the snippet and change the `content="…"` value.
+Keep it under 158 characters or Google truncates it; `build_seo.py` enforces
+that limit and refuses to run otherwise.
+
+### Why no SEO plugin
+
+Rank Math installs over REST but stays dormant until its setup wizard is run
+in wp-admin, and it exposes neither a REST namespace nor REST-writable post
+meta, so nothing could be configured or populated remotely. It was removed
+rather than left half-configured. If SGS later want to manage titles and
+descriptions from the post editor, run the Rank Math wizard and delete the
+`SGS SEO - *` snippets so the two do not both emit tags.
+
+### Turning on analytics
+
+1. Create the GA4 property and copy the Measurement ID (`G-…`).
+2. In Search Console add the `https://satcomgateway.com` property and choose
+   the **HTML tag** method; copy the token out of the `content="…"` attribute.
+3. Put both in `.env.deploy` (it is outside the repo and never committed):
+
+   ```
+   GA4_ID=G-XXXXXXXXXX
+   GSC_VERIFICATION=the-token-only
+   ```
+
+4. `python tools/build_seo.py`, then verify in Search Console and submit
+   `https://satcomgateway.com/wp-sitemap.xml`.
+
+### Also set
+
+- **Site icon** — `tools/make_favicon.py` builds a 512×512 mark from the logo
+  on the brand maroon and sets it. A wide logo cropped square is unreadable
+  at 16px, which is why it is not used directly.
+- **Share images** — `tools/make_og_images.py` writes 1200×630 cards so
+  LinkedIn and X stop cropping the 4:3 facility photos arbitrarily.
+- **Sitemap** — WordPress core at `/wp-sitemap.xml`, already in `robots.txt`.

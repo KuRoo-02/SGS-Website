@@ -94,7 +94,7 @@ brand = container([
     widget("image", {
         "image": {"id": LOGO.get("id"), "url": LOGO.get("url")},
         "width": px(130),
-        "image_size": "full",
+        "image_size": "medium",
         "link_to": "custom",
         "link": {"url": "/"},
     }),
@@ -208,7 +208,7 @@ def col_heading(text):
 brand_col = container([
     widget("image", {
         "image": {"id": LOGO_LIGHT.get("id"), "url": LOGO_LIGHT.get("url")},
-        "width": px(150), "image_size": "full",
+        "width": px(150), "image_size": "medium",
         # the column goes full width on a tablet and an image widget centres
         # by default, which floats the logo into the middle of the footer
         "align": "left",

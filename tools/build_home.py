@@ -382,7 +382,10 @@ def vrow(video_slug, poster_slug, eb, title, body, link_text, link, flip=False):
               background_background="video",
               background_video_link=url(video_slug),
               background_video_fallback=img(poster_slug),
-              background_play_on_mobile="yes",
+              # 1.6MB of decorative video on a phone is not worth it; with
+              # this off Elementor never sets the src on mobile and shows the
+              # poster instead
+              background_play_on_mobile="",
               border_radius=box(8, 8, 8, 8),
               overflow="hidden")
     panel = C([eyebrow(eb, dark=True),

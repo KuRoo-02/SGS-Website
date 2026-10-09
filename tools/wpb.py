@@ -61,6 +61,8 @@ class WP:
         for k in ("WP_URL", "WP_USER", "WP_APP_PASSWORD"):
             if not env.get(k):
                 sys.exit("Missing %s in .env.deploy" % k)
+        # keep the whole file: build_seo reads optional GA4/GSC keys from it
+        self.env = env
         self.url = env["WP_URL"].rstrip("/")
         self.auth = "Basic " + base64.b64encode(
             ("%s:%s" % (env["WP_USER"], env["WP_APP_PASSWORD"])).encode()).decode()
