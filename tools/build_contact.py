@@ -92,6 +92,9 @@ FORM = W("form", {
     # --- layout + styling ---
     "button_text": "Send enquiry",
     "button_size": "md",
+    "button_width": "40",
+    "button_width_tablet": "50",
+    "button_width_mobile": "100",
     "button_background_color": CTA,
     "button_text_color": "#FFFFFF",
     "button_background_color_hover": CTA_H,
@@ -199,7 +202,7 @@ EL.append(section([split(
          flex_gap=gap(0, 14)),
     half([W("google_maps", {
               "address": "2.609896,101.957879",
-              "zoom": {"unit": "px", "size": 13, "sizes": []},
+              "zoom": {"unit": "px", "size": 15, "sizes": []},
               "height": {"unit": "px", "size": 460, "sizes": []},
               "border_radius": box(14, 14, 14, 14)}),
           para("SGS Ground Station (KL2) &mdash; Rantau, Negeri Sembilan, Malaysia.",

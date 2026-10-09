@@ -177,6 +177,12 @@ SETTINGS = {
         # publishes a first post -- no template edit needed.
         " .sgs-feed-empty{display:none;}"
         " .sgs-feed:not(:has(article)) .sgs-feed-empty{display:flex;}"
+        # The Maps widget puts the radius on its wrapper, so the iframe keeps
+        # square corners; and the consent checkbox renders at the browser
+        # default ~13px, which is a poor target on touch.
+        " .elementor-widget-google_maps iframe{border-radius:14px;}"
+        " .elementor-field-type-acceptance input[type=checkbox]{width:17px;"
+        "height:17px;margin-right:6px;vertical-align:-3px;accent-color:#00769F;}"
     ),
 
     # --- images ---
