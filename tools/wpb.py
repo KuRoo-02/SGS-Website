@@ -165,9 +165,16 @@ class WP:
         string shorthand ("include/general" -> HTTP 500). It wants the parsed
         object form.
         """
-        payload = {"conditions": [
-            {"type": "include", "name": n, "sub_name": "", "sub_id": ""}
-            for n in conditions]}
+        norm = []
+        for cnd in conditions:
+            if isinstance(cnd, dict):
+                base = {"type": "include", "name": "general", "sub_name": "", "sub_id": ""}
+                base.update(cnd)
+                norm.append(base)
+            else:
+                norm.append({"type": "include", "name": cnd,
+                             "sub_name": "", "sub_id": ""})
+        payload = {"conditions": norm}
         return self.call(
             "/wp-json/elementor/v1/site-editor/templates-conditions/%d" % template_id,
             "POST", payload)

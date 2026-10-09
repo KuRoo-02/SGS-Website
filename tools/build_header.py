@@ -50,8 +50,11 @@ topbar = container([
                 {"_id": eid(), "text": "+60 6-694 4990",
                  "selected_icon": ico("phone"),
                  "link": {"url": "tel:+6066944990"}},
+                # Elementor bundles Font Awesome 5, where this marker is
+                # "map-marker-alt". The FA6 name "location-dot" silently
+                # renders no icon at all.
                 {"_id": eid(), "text": "Rantau, Negeri Sembilan, Malaysia",
-                 "selected_icon": ico("location-dot")},
+                 "selected_icon": ico("map-marker-alt")},
             ],
             "space_between": px(22),
             "icon_color": CYAN,
@@ -85,15 +88,35 @@ topbar = container([
     hide_mobile="hidden-mobile",
 )
 
+# Logo plus company name, as a lockup. A child container in a flex row needs
+# an explicit width or it claims the whole row and pushes the nav off-screen.
+brand = container([
+    widget("image", {
+        "image": {"id": LOGO.get("id"), "url": LOGO.get("url")},
+        "width": px(130),
+        "image_size": "full",
+        "link_to": "custom",
+        "link": {"url": "/"},
+    }),
+    widget("text-editor", {
+        "editor": ('<p style="margin:0;line-height:1.25;font-family:Lexend,sans-serif;'
+                   'font-weight:600;font-size:15px;color:#15191E;">'
+                   'Satcom Gateway Services</p>'
+                   '<p style="margin:0;line-height:1.3;font-size:12px;color:#666D76;">'
+                   'Sdn Bhd &middot; Malaysia</p>'),
+        "hide_mobile": "hidden-mobile",
+    }),
+],
+    content_width="full",
+    width=px(30, "%"), width_tablet=px(42, "%"), width_mobile=px(46, "%"),
+    flex_direction="row",
+    flex_align_items="center",
+    flex_gap=gap(14),
+)
+
 main_bar = container([
     container([
-        widget("image", {
-            "image": {"id": LOGO.get("id"), "url": LOGO.get("url")},
-            "width": px(130),
-            "image_size": "full",
-            "link_to": "custom",
-            "link": {"url": "/"},
-        }),
+        brand,
         widget("nav-menu", {
             "menu": "primary",
             "layout": "horizontal",
@@ -110,6 +133,7 @@ main_bar = container([
             "pointer_color_menu_item_hover": CYAN,
             "pointer_color_menu_item_active": CYAN,
             "padding_horizontal_menu_item": px(14),
+            "toggle_align": "right",
             "toggle_size": px(22),
             "toggle_color": "#15191E",
         }),

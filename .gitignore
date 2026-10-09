@@ -9,3 +9,7 @@ desktop.ini
 *.swp
 .vscode/
 .idea/
+
+# Python bytecode from the build scripts
+__pycache__/
+*.pyc

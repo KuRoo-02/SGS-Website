@@ -170,6 +170,13 @@ SETTINGS = {
         "animation-duration:.01ms !important;animation-iteration-count:1 !important;"
         "transition-duration:.01ms !important;}"
         ".elementor-invisible{visibility:visible !important;opacity:1 !important;}}"
+        # The Posts widget renders nothing at all on an empty query
+        # (nothing_found_message belongs to Archive Posts, not Posts), which
+        # would leave a blank band wherever a feed is placed. These two rules
+        # swap in a written empty state and retire it by itself the moment SGS
+        # publishes a first post -- no template edit needed.
+        " .sgs-feed-empty{display:none;}"
+        " .sgs-feed:not(:has(article)) .sgs-feed-empty{display:flex;}"
     ),
 
     # --- images ---

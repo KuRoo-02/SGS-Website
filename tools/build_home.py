@@ -2,6 +2,7 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from wpb import WP, eid, px, box, gap
+from sgs import posts_w, feed_empty, SUBTLE
 
 wp = WP()
 M = wp.media_map()
@@ -32,6 +33,11 @@ TINT     = "#F0F3F6"
 def C(children, **s):
     base = {"content_width": "boxed"}
     base.update(s)
+    # Containers want "css_classes", widgets want "_css_classes". The widget
+    # spelling on a container stores fine and renders no class. Same guard as
+    # sgs.C() -- this file predates that module and keeps its own helpers.
+    if "_css_classes" in base:
+        base["css_classes"] = base.pop("_css_classes")
     return {"id": eid(), "elType": "container", "settings": base, "elements": children}
 
 
@@ -489,17 +495,28 @@ EL.append(section([
          content_width="full", width=px(30, "%"), flex_align_items="flex-end")],
       content_width="boxed", flex_direction="row", flex_align_items="flex-end",
       padding=box(0, 24, 0, 24)),
-    C([W("posts", {
-        "posts_post_type": "post", "posts_per_page": 3, "posts_posts_per_page": 3,
-        "columns": 3, "columns_tablet": 2, "columns_mobile": 1,
-        "pagination_type": "", "show_excerpt": "yes", "excerpt_length": 18,
-        "meta_data": ["date"],
-        "item_gap": px(32),
-        "box_border": "yes", "box_border_color": BORDER,
-        "box_border_radius": box(14, 14, 14, 14),
-        "title_color": INK, "excerpt_color": MUTED,
-    })], content_width="boxed", padding=box(0, 24, 0, 24)),
-], tint=True))
+    # Skin controls carry the skin-id prefix or they are ignored -- see sgs.py
+    C([posts_w("classic",
+               widget={"posts_post_type": "post", "pagination_type": ""},
+               posts_per_page=3, columns=3, columns_tablet=2, columns_mobile=1,
+               row_gap=px(32), column_gap=px(32),
+               thumbnail_size="medium_large",
+               show_excerpt="yes", excerpt_length=18,
+               meta_data=["date"],
+               show_read_more="yes", read_more_text="Read more",
+               box_border="yes", box_border_color=BORDER,
+               box_border_width=px(1), box_border_radius=box(14, 14, 14, 14),
+               title_color=INK, excerpt_color=MUTED, meta_color=SUBTLE,
+               read_more_color=CTA,
+               title_typography_typography="custom",
+               title_typography_font_family="Lexend",
+               title_typography_font_size=px(18),
+               title_typography_font_weight="600")],
+      content_width="boxed", padding=box(0, 24, 0, 24)),
+    feed_empty("The newsroom is live",
+               "Announcements, technical updates and event news from the Rantau ground "
+               "station will appear here as they are published.", on_tint=True),
+], tint=True, _css_classes="sgs-feed"))
 
 # -------------------------------------------------------- 12. CTA
 EL.append(C([
