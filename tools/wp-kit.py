@@ -183,6 +183,31 @@ SETTINGS = {
         " .elementor-widget-google_maps iframe{border-radius:14px;}"
         " .elementor-field-type-acceptance input[type=checkbox]{width:17px;"
         "height:17px;margin-right:6px;vertical-align:-3px;accent-color:#00769F;}"
+
+        # --- touch targets ---
+        # The burger renders 33px square and footer link rows 26px, both under
+        # the 44px minimum. Padding the rows also separates them, which matters
+        # more in a dense footer list than the icon size does.
+        # A text-editor's last paragraph keeps its bottom margin, which leaves
+        # a band of dead space under the copy in every card and column.
+        " .elementor-widget-text-editor p:last-child{margin-bottom:0;}"
+
+        " .elementor-menu-toggle{min-width:44px;min-height:44px;}"
+        " [data-elementor-type=footer] .elementor-icon-list-item>a{"
+        "padding-top:7px;padding-bottom:7px;}"
+
+        # --- phone ---
+        " @media (max-width:767px){"
+        # buttons stacked at their own content widths look ragged; matching
+        # them is both tidier and a bigger target
+        "  .elementor-widget-button .elementor-button{width:100%;}"
+        # The container's background overlay is a ::before pseudo-element,
+        # not a child div. The scrim runs left-to-right for a half-width
+        # desktop column; on a phone the copy sits over the whole photo, so
+        # darken downward instead.
+        "  .sgs-hero::before{"
+        "background-image:linear-gradient(180deg,rgba(36,0,11,.88),rgba(18,4,10,.80));}"
+        " }"
     ),
 
     # --- images ---

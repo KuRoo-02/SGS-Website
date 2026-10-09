@@ -28,6 +28,22 @@ TINT     = "#F0F3F6"
 
 COLW = {2: (48, 48, 100), 3: (31.5, 48, 100), 4: (23.2, 48, 100)}
 
+# Elementor only forces flex-wrap:wrap at the MOBILE breakpoint. A two-column
+# row therefore does not stack on a tablet -- the halves just shrink to about
+# 354px each and the layout reads as two cramped columns, while staying inside
+# the viewport so an overflow check calls it clean. Switching the direction is
+# what actually stacks them; align-items has to be reset too, or "center"
+# shrink-wraps each child to its content once the axis flips.
+STACK_TABLET = dict(flex_direction_tablet="column",
+                    flex_align_items_tablet="stretch",
+                    flex_gap_tablet=gap(36))
+
+# Buttons grouped in a row stack on a phone at two different content widths,
+# which reads as ragged. Stack them deliberately and let each fill the row.
+# The inner .elementor-button still hugs its text, so the kit's CSS stretches
+# it to 100% at the same breakpoint.
+BTN_STACK = dict(flex_direction_mobile="column", flex_align_items_mobile="stretch")
+
 
 def colw(cols):
     d, t, m = COLW[cols]
@@ -65,8 +81,13 @@ def eyebrow(text, dark=False, green=False):
 def h2(text, dark=False, size=None):
     s = {"title": text, "header_size": "h2", "title_color": "#FFFFFF" if dark else INK}
     if size:
+        # An explicit size silences the kit's responsive H2 steps, so a 38px
+        # heading would stay 38px on a phone. Re-derive the smaller steps.
         s.update({"typography_typography": "custom", "typography_font_family": "Lexend",
-                  "typography_font_size": px(size), "typography_font_weight": "600",
+                  "typography_font_size": px(size),
+                  "typography_font_size_tablet": px(max(24, round(size * 0.86))),
+                  "typography_font_size_mobile": px(max(22, round(size * 0.72))),
+                  "typography_font_weight": "600",
                   "typography_line_height": {"unit": "em", "size": 1.18, "sizes": []}})
     return W("heading", s)
 
@@ -113,7 +134,7 @@ def btn(text, link, variant="primary"):
 
 def ticks(items, dark=False):
     return W("icon-list", {
-        "icon_list": [{"_id": eid(), "text": t, "selected_icon": ico("circle-check")}
+        "icon_list": [{"_id": eid(), "text": t, "selected_icon": ico("check-circle")}
                       for t in items],
         "space_between": px(10), "icon_color": GREEN_T if not dark else GREEN,
         "icon_size": px(15), "text_color": ON_DARK if dark else MUTED,
@@ -226,7 +247,8 @@ def page_hero(crumb, eb, title, lead):
 def split(left, right, media_first=False, g=64, align="center"):
     kids = [right, left] if media_first else [left, right]
     return C(kids, content_width="boxed", flex_direction="row",
-             flex_gap=gap(g), flex_align_items=align, padding=box(0, 24, 0, 24))
+             flex_gap=gap(g), flex_align_items=align, padding=box(0, 24, 0, 24),
+             **STACK_TABLET)
 
 
 def half(children, **extra):
@@ -254,9 +276,11 @@ def cta_band():
            C([btn("Contact SGS", "/contact-us/", "primary"),
               btn("info@satcomgs.com", "mailto:info@satcomgs.com", "ghost-light")],
              content_width="full", width=px(42, "%"), width_tablet=px(100, "%"),
-             flex_direction="row", flex_gap=gap(12), flex_justify_content="flex-end")],
+             flex_direction="row", flex_wrap="wrap", flex_gap=gap(12), **BTN_STACK,
+             flex_justify_content="flex-end",
+             flex_justify_content_tablet="flex-start")],
           content_width="boxed", flex_direction="row", flex_align_items="center",
-          flex_gap=gap(48), padding=box(0, 24, 0, 24))],
+          flex_gap=gap(48), padding=box(0, 24, 0, 24), **STACK_TABLET)],
         content_width="full",
         padding=box(84, 0, 84, 0), padding_mobile=box(56, 0, 56, 0),
         background_background="gradient", background_color="#340010",
@@ -327,7 +351,7 @@ def feed_empty(title, body, on_tint=False):
                C([btn("Contact SGS", "/contact-us/", "primary"),
                   btn("info@satcomgs.com", "mailto:info@satcomgs.com", "ghost")],
                  content_width="full", width=px(100, "%"), flex_direction="row",
-                 flex_wrap="wrap", flex_gap=gap(12), flex_justify_content="center")],
+                 flex_wrap="wrap", flex_gap=gap(12), **BTN_STACK, flex_justify_content="center")],
               content_width="full", width=px(100, "%"),
               flex_gap=gap(0, 12), flex_align_items="center", text_align="center",
               padding=box(46, 28, 46, 28),

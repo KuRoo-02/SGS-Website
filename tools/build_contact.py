@@ -160,7 +160,7 @@ EL.append(section([
                  C([btn("Click to call", TEL, "primary"),
                     btn("Email us", "mailto:%s" % TO, "ghost")],
                    content_width="full", width=px(100, "%"), flex_direction="row",
-                   flex_wrap="wrap", flex_gap=gap(12))],
+                   flex_wrap="wrap", flex_gap=gap(12), **BTN_STACK)],
                 content_width="full", width=px(100, "%"), flex_gap=gap(0, 16),
                 background_background="classic", background_color=TINT,
                 border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
@@ -168,7 +168,7 @@ EL.append(section([
                 padding=box(32, 30, 32, 30))],
              width=px(42, "%"), width_tablet=px(100, "%"))],
       content_width="boxed", flex_direction="row", flex_align_items="flex-start",
-      flex_gap=gap(48), padding=box(0, 24, 0, 24)),
+      flex_gap=gap(48), padding=box(0, 24, 0, 24), **STACK_TABLET),
 ]))
 
 

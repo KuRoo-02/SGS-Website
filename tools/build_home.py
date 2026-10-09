@@ -2,7 +2,7 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from wpb import WP, eid, px, box, gap
-from sgs import posts_w, feed_empty, SUBTLE
+from sgs import posts_w, feed_empty, SUBTLE, STACK_TABLET, BTN_STACK
 
 wp = WP()
 M = wp.media_map()
@@ -63,8 +63,13 @@ def h2(text, dark=False, size=None):
     s = {"title": text, "header_size": "h2",
          "title_color": "#FFFFFF" if dark else INK}
     if size:
+        # An explicit size silences the kit's responsive H2 steps, so a 38px
+        # heading would stay 38px on a phone. Re-derive the smaller steps.
         s.update({"typography_typography": "custom", "typography_font_family": "Lexend",
-                  "typography_font_size": px(size), "typography_font_weight": "600",
+                  "typography_font_size": px(size),
+                  "typography_font_size_tablet": px(max(24, round(size * 0.86))),
+                  "typography_font_size_mobile": px(max(22, round(size * 0.72))),
+                  "typography_font_weight": "600",
                   "typography_line_height": {"unit": "em", "size": 1.18, "sizes": []}})
     return W("heading", s)
 
@@ -194,7 +199,7 @@ EL.append(C([
              dark=True, lead=True, color="#FFFFFFD6"),
         C([btn("Explore our services", "/our-services/", "primary"),
            btn("Tour the facility", "/about-us/#facility", "ghost-light")],
-          content_width="full", flex_direction="row", flex_gap=gap(12),
+          content_width="full", flex_direction="row", flex_gap=gap(12), **BTN_STACK,
           width=px(100, "%")),
     ], content_width="boxed", width=px(62, "%"), width_tablet=px(100, "%"),
        flex_gap=gap(0, 20), padding=box(0, 24, 0, 24)),
@@ -210,6 +215,14 @@ EL.append(C([
     background_overlay_color="rgba(36,0,11,0.94)",
     background_overlay_color_b="rgba(18,4,10,0.32)",
     background_overlay_gradient_angle={"unit": "deg", "size": 100},
+    # Elementor defaults the overlay to opacity .5, which halves the alpha
+    # already carried by the rgba stops and leaves the copy sitting on a
+    # washed-out photo. The colours above are the intended strength.
+    background_overlay_opacity={"unit": "px", "size": 1, "sizes": []},
+    # the 100deg scrim darkens the left, which is where the copy sits on a
+    # desktop; on a phone the copy spans the full width, so the kit's CSS
+    # swaps in a vertical scrim for .sgs-hero
+    _css_classes="sgs-hero",
 ))
 
 # fact strip
@@ -221,7 +234,8 @@ def fact(v, l):
                       "typography_line_height": {"unit": "em", "size": 1.15, "sizes": []}}),
         W("heading", {"title": l, "header_size": "div", "title_color": "#FFFFFFA8",
                       "typography_typography": "custom", "typography_font_size": px(13)}),
-    ], content_width="full", width=px(100, "%"), flex_gap=gap(0, 4),
+    ], content_width="full", width=px(25, "%"), width_tablet=px(50, "%"),
+       width_mobile=px(100, "%"), flex_gap=gap(0, 4),
        flex_justify_content="flex-end",
        border_border="solid", border_width=box(0, 0, 0, 1), border_color="#FFFFFF1C",
        padding=box(0, 0, 0, 22))
@@ -231,8 +245,8 @@ EL.append(C([
        fact("GEO + LEO", "APStar fleet &amp; SPACESAIL constellation"),
        fact("65 km", "Dark fibre, full redundancy to KL1"),
        fact("Tier III", "Class data centre &amp; colocation")],
-      content_width="boxed", flex_direction="row", flex_gap=gap(0),
-      padding=box(22, 24, 22, 24)),
+      content_width="boxed", flex_direction="row", flex_wrap="wrap",
+      flex_gap=gap(0, 22), padding=box(22, 24, 22, 24)),
 ], content_width="full", background_background="classic",
    background_color="#0C0A14E6",
    border_border="solid", border_width=box(1, 0, 0, 0), border_color="#FFFFFF21"))
@@ -269,7 +283,7 @@ EL.append(section([
                "Registered for the provision of applications services.")],
           content_width="full", width=px(100, "%"), flex_gap=gap(0, 14)),
     ], content_width="boxed", flex_direction="row", flex_gap=gap(56),
-       flex_align_items="center", padding=box(0, 24, 0, 24)),
+       flex_align_items="center", padding=box(0, 24, 0, 24), **STACK_TABLET),
 ], pad=72)
 
 )
@@ -312,7 +326,7 @@ EL.append(section([
                 "engineering access. It is linked to the TSGI ground station (KL1) by 65&nbsp;km of "
                 "dark fibre operating in full redundancy."),
            W("icon-list", {
-               "icon_list": [{"_id": eid(), "text": t, "selected_icon": ico("circle-check")}
+               "icon_list": [{"_id": eid(), "text": t, "selected_icon": ico("check-circle")}
                              for t in [
                    "Antenna farm supporting C-band, Ku-band and Ka-band operations",
                    "Dual telecommunications providers &mdash; Telekom Malaysia and Fiberail",
@@ -324,9 +338,9 @@ EL.append(section([
                "icon_typography_typography": "custom", "icon_typography_font_size": px(15.5)}),
            C([btn("View the facility", "/about-us/#facility", "maroon"),
               btn("Request a site visit", "/contact-us/", "ghost")],
-             content_width="full", width=px(100, "%"), flex_direction="row", flex_gap=gap(12)),
+             content_width="full", width=px(100, "%"), flex_direction="row", flex_gap=gap(12), **BTN_STACK),
           ], content_width="full", width=px(100, "%"), flex_gap=gap(0, 16)),
-    ], content_width="boxed", flex_direction="row", flex_gap=gap(64),
+    ], content_width="boxed", flex_direction="row", flex_gap=gap(64), **STACK_TABLET,
        flex_align_items="center", padding=box(0, 24, 0, 24)),
 ], tint=True))
 
@@ -389,7 +403,7 @@ def vrow(video_slug, poster_slug, eb, title, body, link_text, link, flip=False):
               margin_tablet=box(-40, 0, 0, 0),
               z_index=2)
     kids = [panel, media] if flip else [media, panel]
-    return C(kids, content_width="boxed", flex_direction="row",
+    return C(kids, content_width="boxed", flex_direction="row", **STACK_TABLET,
              flex_align_items="center", flex_gap=gap(0),
              padding=box(0, 24, 0, 24))
 
@@ -431,8 +445,8 @@ EL.append(section([
        stat(648, "", "Target LEO constellation size"),
        stat(65, " km", "Redundant dark fibre to KL1"),
        stat(24, "/7", "Monitored teleport operations")],
-      content_width="boxed", flex_direction="row", flex_gap=gap(1),
-      padding=box(0, 24, 0, 24)),
+      content_width="boxed", flex_direction="row", flex_wrap="wrap",
+      flex_gap=gap(1), padding=box(0, 24, 0, 24)),
 ], pad=72))
 
 # -------------------------------------------------------- 8. WHY SGS
@@ -494,7 +508,7 @@ EL.append(section([
        C([btn("View all updates", "/news-events/", "ghost")],
          content_width="full", width=px(30, "%"), flex_align_items="flex-end")],
       content_width="boxed", flex_direction="row", flex_align_items="flex-end",
-      padding=box(0, 24, 0, 24)),
+      padding=box(0, 24, 0, 24), **STACK_TABLET),
     # Skin controls carry the skin-id prefix or they are ignored -- see sgs.py
     C([posts_w("classic",
                widget={"posts_post_type": "post", "pagination_type": ""},
@@ -528,8 +542,10 @@ EL.append(C([
        C([btn("Contact SGS", "/contact-us/", "primary"),
           btn("info@satcomgs.com", "mailto:info@satcomgs.com", "ghost-light")],
          content_width="full", width=px(42, "%"), width_tablet=px(100, "%"),
-         flex_direction="row", flex_gap=gap(12), flex_justify_content="flex-end")],
+         flex_direction="row", flex_wrap="wrap", flex_gap=gap(12), **BTN_STACK,
+         flex_justify_content="flex-end", flex_justify_content_tablet="flex-start")],
       content_width="boxed", flex_direction="row", flex_align_items="center",
+      **STACK_TABLET,
       flex_gap=gap(48), padding=box(0, 24, 0, 24)),
 ],
     content_width="full",

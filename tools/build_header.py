@@ -184,7 +184,7 @@ def link_list(items):
         "view": "traditional",
         "icon_list": [{"_id": eid(), "text": t, "link": {"url": u},
                        "selected_icon": {"value": "", "library": ""}} for t, u in items],
-        "space_between": px(11),
+        "space_between": px(4),
         "text_color": ON_DARK,
         "text_color_hover": CYAN,
         "icon_typography_typography": "custom",
@@ -209,6 +209,9 @@ brand_col = container([
     widget("image", {
         "image": {"id": LOGO_LIGHT.get("id"), "url": LOGO_LIGHT.get("url")},
         "width": px(150), "image_size": "full",
+        # the column goes full width on a tablet and an image widget centres
+        # by default, which floats the logo into the middle of the footer
+        "align": "left",
     }),
     widget("text-editor", {
         "editor": ("<p>Satcom Gateway Services Sdn Bhd is a Malaysia-based satellite "
@@ -219,7 +222,7 @@ brand_col = container([
         "typography_typography": "custom",
         "typography_font_size": px(15),
     }),
-], content_width="full", width=px(100, "%"), flex_gap=gap(18))
+], content_width="full", width=px(31, "%"), width_tablet=px(100, "%"), width_mobile=px(100, "%"), flex_gap=gap(18))
 
 company_col = container([
     col_heading("Company"),
@@ -230,7 +233,7 @@ company_col = container([
         ("News & Events", "/news-events/"),
         ("Contact Us", "/contact-us/"),
     ]),
-], content_width="full", width=px(100, "%"), flex_gap=gap(18))
+], content_width="full", width=px(20, "%"), width_tablet=px(26, "%"), width_mobile=px(100, "%"), flex_gap=gap(18))
 
 services_col = container([
     col_heading("Services"),
@@ -242,7 +245,7 @@ services_col = container([
         ("Data centre & colocation", "/our-services/#datacentre"),
         ("Technical services", "/our-services/#technical"),
     ]),
-], content_width="full", width=px(100, "%"), flex_gap=gap(18))
+], content_width="full", width=px(21, "%"), width_tablet=px(30, "%"), width_mobile=px(100, "%"), flex_gap=gap(18))
 
 contact_col = container([
     col_heading("Get in touch"),
@@ -251,7 +254,7 @@ contact_col = container([
         "icon_list": [
             {"_id": eid(),
              "text": "Lot 23126, Jalan Kuala Sawah,<br>Batu 10 Kampung Ribu,<br>71200 Rantau, Negeri Sembilan, Malaysia",
-             "selected_icon": ico("location-dot")},
+             "selected_icon": ico("map-marker-alt")},
             {"_id": eid(), "text": "info@satcomgs.com",
              "selected_icon": ico("envelope"),
              "link": {"url": "mailto:info@satcomgs.com"}},
@@ -268,12 +271,13 @@ contact_col = container([
         "icon_typography_typography": "custom",
         "icon_typography_font_size": px(15),
     }),
-], content_width="full", width=px(100, "%"), flex_gap=gap(18))
+], content_width="full", width=px(24, "%"), width_tablet=px(34, "%"), width_mobile=px(100, "%"), flex_gap=gap(18))
 
 footer_cols = container(
     [brand_col, company_col, services_col, contact_col],
     content_width="boxed",
     flex_direction="row",
+    flex_wrap="wrap",
     flex_align_items="flex-start",
     flex_gap=gap(32, 48),
     padding=box(0, 24, 64, 24),
@@ -298,8 +302,10 @@ footer_bottom = container([
 ],
     content_width="boxed",
     flex_direction="row",
+    flex_direction_mobile="column",
     flex_justify_content="space-between",
     flex_align_items="center",
+    flex_align_items_mobile="flex-start",
     flex_gap=gap(16),
     padding=box(22, 24, 22, 24),
     border_border="solid",

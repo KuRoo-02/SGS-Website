@@ -186,7 +186,7 @@ single = [
                     border_radius=box(14, 14, 14, 14), padding=box(26, 26, 26, 26)),
                  ], width=px(34, "%"), width_tablet=px(100, "%"), flex_gap=gap(0, 24)),
         ], content_width="boxed", flex_direction="row", flex_align_items="flex-start",
-           flex_gap=gap(48), padding=box(0, 24, 0, 24)),
+           flex_gap=gap(48), padding=box(0, 24, 0, 24), **STACK_TABLET),
     ]),
 
     # related

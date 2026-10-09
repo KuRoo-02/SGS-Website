@@ -118,7 +118,7 @@ EL.append(section([split(
                "services to be designed, hosted and supported from the same site."),
           C([btn("Explore the fleet", "/our-services/#capacity", "maroon"),
              btn("Visit apstar.com", "https://www.apstar.com/", "ghost")],
-            content_width="full", width=px(100, "%"), flex_direction="row", flex_gap=gap(12))]),
+            content_width="full", width=px(100, "%"), flex_direction="row", flex_gap=gap(12), **BTN_STACK)]),
     half([tl("2011 &ndash; 2018", "Foundational research",
              "SPACESAIL research on key LEO technologies; company founded in 2018."),
           tl("2018 &ndash; 2019", "APStar-5C and APStar-6D enter service",
@@ -174,7 +174,7 @@ EL.append(section([
     })], content_width="boxed", padding=box(0, 24, 0, 24)),
     C([btn("Request a site visit", "/contact-us/", "maroon"),
        btn("Data centre &amp; colocation", "/our-services/#datacentre", "ghost")],
-      content_width="boxed", flex_direction="row", flex_gap=gap(12),
+      content_width="boxed", flex_direction="row", flex_gap=gap(12), **BTN_STACK,
       padding=box(0, 24, 0, 24)),
 ], anchor="facility"))
 
