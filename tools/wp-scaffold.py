@@ -97,6 +97,31 @@ MEDIA = {
     "weather-station.jpg": "Weather station at the SGS facility",
     "sgs-logo.png":       "SGS — Satcom Gateway Services logo",
     "sgs-logo-light.png": "SGS — Satcom Gateway Services logo, light version",
+
+    # supplied 5 Oct 2026 — these are the current facility, and the first set
+    # that shows people at work
+    "antenna-array.jpg":       "The antenna array at the SGS ground station in Rantau",
+    "spacesail-radome.jpg":    "The SPACESAIL LEO radome on the roof of the SGS facility",
+    "rf-engineer.jpg":         "An SGS engineer testing equipment with a handheld analyser at the racks",
+    "spectrum-analyzer.jpg":   "A spectrum analyser showing an RF trace at the SGS facility",
+    "engineers-racks.jpg":     "SGS engineers working at the equipment racks",
+    "security-monitoring.jpg": "The 24-hour security and operations monitoring room",
+    "office-team.jpg":         "The SGS operations and engineering team at work",
+    "teleport-security.jpg":   "A satellite antenna at the SGS teleport with a member of site staff",
+    "access-control.jpg":      "Key and access control cabinet at the SGS facility",
+}
+
+# Looping background clips used by the video feature band, plus their poster
+# frames. Uploaded so the Elementor build can reference them from the library.
+VIDEO = {
+    "dish.mp4":                 "Looping footage of a large satellite antenna against the sky",
+    "constellation.mp4":        "Looping footage of satellites in orbit around Earth",
+    "earth.mp4":                "Looping footage of the Earth limb seen from orbit",
+    "aerial.mp4":               "Looping aerial footage over a satellite antenna farm",
+    "dish-poster.jpg":          "Poster frame: a large satellite antenna against the sky",
+    "constellation-poster.jpg": "Poster frame: satellites in orbit around Earth",
+    "earth-poster.jpg":         "Poster frame: the Earth limb seen from orbit",
+    "aerial-poster.jpg":        "Poster frame: aerial view over a satellite antenna farm",
 }
 
 # PLACEHOLDER CONTENT. Every post below was written to demonstrate the
@@ -331,8 +356,10 @@ def do_media(wp):
         page += 1
 
     ids = {}
-    for fname, alt in MEDIA.items():
-        path = os.path.join(IMG, fname)
+    catalogue = [(f, a, IMG) for f, a in MEDIA.items()]
+    catalogue += [(f, a, os.path.join(SITE, "assets", "video")) for f, a in VIDEO.items()]
+    for fname, alt, folder in catalogue:
+        path = os.path.join(folder, fname)
         if not os.path.exists(path):
             say("skip", fname, "not found on disk")
             continue
@@ -480,10 +507,14 @@ def main():
     print(f"User   : {env['WP_USER']}")
     print(f"Mode   : {'DRY RUN — nothing will be written' if DRY else 'APPLY'}")
 
-    me = wp.get("/users/me")
-    print(f"Auth   : ok as '{me.get('name')}' ({', '.join(me.get('roles', []))})")
-    if "administrator" not in me.get("roles", []):
-        sys.exit("  This user is not an administrator — scaffolding will fail.")
+    # roles/capabilities are only returned in the edit context; asking for the
+    # default view context yields an empty list and a false "not an admin".
+    me = wp.get("/users/me", context="edit")
+    roles = me.get("roles") or []
+    caps = me.get("capabilities") or {}
+    print(f"Auth   : ok as '{me.get('name')}' ({', '.join(roles) or 'roles not exposed'})")
+    if "administrator" not in roles and not caps.get("manage_options"):
+        sys.exit("  This user lacks manage_options — scaffolding will fail.")
 
     steps = a.only
     media = cats = {}
@@ -504,7 +535,7 @@ def main():
         if not media:
             media = {}
             for m in (wp.get("/media", per_page=100) or []):
-                for fname in MEDIA:
+                for fname in list(MEDIA) + list(VIDEO):
                     if os.path.splitext(fname)[0] == m["slug"]:
                         media[fname] = m["id"]
         do_posts(wp, cats, media)
