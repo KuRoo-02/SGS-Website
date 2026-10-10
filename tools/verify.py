@@ -33,6 +33,11 @@ PROBE = """() => {
     overflow: over,
     broken: imgs.filter(i => i.complete && i.naturalWidth === 0).map(i => i.currentSrc || i.src),
     placeholder: imgs.filter(i => /placeholder\\.png/.test(i.src)).length,
+    // Elementor swaps every icon it recognises for an inline SVG. Anything
+    // still a bare <i class="fa-..."> is a name its Font Awesome 5 map
+    // rejected -- usually an FA6 rename -- and renders as blank space.
+    deadIcons: [...document.querySelectorAll('i[class*="fa-"]')]
+      .map(e => (e.className.match(/fa-[a-z0-9-]+$/) || [''])[0]).filter(Boolean),
     h1: [...document.querySelectorAll('h1')].map(h => h.textContent.trim()),
     posts: document.querySelectorAll('.elementor-widget-posts article').length,
     forms: document.querySelectorAll('form.elementor-form').length,
@@ -67,6 +72,8 @@ def run(names, shots, widths):
                     flags.append("%d broken img" % len(d["broken"]))
                 if d["placeholder"]:
                     flags.append("%d placeholder" % d["placeholder"])
+                if d["deadIcons"]:
+                    flags.append("dead icons: %s" % ", ".join(sorted(set(d["deadIcons"]))))
                 if errs:
                     flags.append("%d console err" % len(errs))
                 bad += len(flags)

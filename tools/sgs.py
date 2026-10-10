@@ -65,7 +65,31 @@ def W(t, s):
     return {"id": eid(), "elType": "widget", "widgetType": t, "settings": s, "elements": []}
 
 
+# Elementor bundles Font Awesome 5. Icons renamed in FA6 silently render
+# nothing at all -- Elementor leaves them as a bare <i> instead of swapping in
+# its inline SVG, so the card just shows blank space. Rather than remember
+# which era each name belongs to, translate the ones that got renamed.
+FA6_TO_FA5 = {
+    "circle-check": "check-circle",
+    "circle-info": "info-circle",
+    "circle-xmark": "times-circle",
+    "location-dot": "map-marker-alt",
+    "tower-broadcast": "broadcast-tower",
+    "screwdriver-wrench": "tools",
+    "shield-halved": "shield-alt",
+    "triangle-exclamation": "exclamation-triangle",
+    "magnifying-glass": "search",
+    "gauge-high": "tachometer-alt",
+    "right-left": "exchange-alt",
+    "earth-asia": "globe-asia",
+    "phone-flip": "phone-alt",
+    "rectangle-list": "list-alt",
+    "arrow-right-long": "long-arrow-alt-right",
+}
+
+
 def ico(name, lib="fa-solid"):
+    name = FA6_TO_FA5.get(name, name)
     return {"value": "%s fa-%s" % (lib, name), "library": lib}
 
 
