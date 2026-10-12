@@ -36,7 +36,7 @@ def idx_card(num, title, link):
                       "typography_font_size": px(17), "typography_font_weight": "600",
                       "link": {"url": link}})],
         content_width="full", **colw(3), flex_gap=gap(0, 6),
-        background_background="classic", background_color="#FFFFFF",
+        background_background="classic", background_color=SURFACE,
         border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
         border_color=BORDER, border_radius=box(14, 14, 14, 14), padding=box(22, 22, 22, 22))
 
@@ -218,7 +218,7 @@ EL.append(section([
     C([W("accordion", {
         "tabs": [{"_id": eid(), "tab_title": q, "tab_content": "<p>%s</p>" % a} for q, a in FAQ],
         "selected_icon": ico("plus"), "selected_active_icon": ico("minus"),
-        "title_color": INK, "tab_active_color": MAROON,
+        "title_color": INK, "tab_active_color": CYAN,
         "content_color": MUTED,
         "border_color": BORDER,
         "title_typography_typography": "custom",

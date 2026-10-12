@@ -64,7 +64,7 @@ def lic(code, title, body):
                       "typography_font_size": px(14), "typography_font_weight": "700"}),
         h3(title, size=17), para(body, size=15)],
         content_width="full", **colw(3), flex_gap=gap(0, 8),
-        background_background="classic", background_color="#FFFFFF",
+        background_background="classic", background_color=SURFACE,
         border_border="solid", border_width=box(1, 1, 1, 4), border_color=BORDER,
         border_radius=box(8, 8, 8, 8), padding=box(24, 24, 24, 24))
 

@@ -428,3 +428,55 @@ Everything points at `info@satcomgs.com`:
 
 Point these at a dedicated address (`careers@…`) by changing `TO` at the top
 of `build_careers.py` and re-running it, or by editing the links in Elementor.
+
+---
+
+## The dark space theme
+
+The site is built in the dark-space direction from the draft, not the light
+one. Both existed behind the toggle in the draft preview bar; this is the
+one that was chosen.
+
+### How it works
+
+The page itself is the night sky. `body::before` in the kit's custom CSS
+holds a fixed starfield and three nebulae, and **sections are translucent
+washes rather than solid fills** — `rgba(255,255,255,.030)` for a normal
+section, `.015` for a tinted one. That is what lets the stars read through
+the whole page instead of only behind the dark bands. Fill a section with a
+solid colour and you punch a hole in the sky.
+
+### The palette lives in one place
+
+`sgs.py`. `build_home.py` and `build_header.py` used to keep their own
+copies, which is exactly why the header stayed light after everything else
+went dark — both now import from `sgs.py`.
+
+| Token | Value | Use |
+|---|---|---|
+| `SPACE` | `#06080F` | page background |
+| `PANEL` / `PANEL_ALT` | 3% / 1.5% white | section washes |
+| `SURFACE` | 4.5% white | cards |
+| `INK` / `MUTED` / `SUBTLE` | `#E9EDF6` / `#A9B3C9` / `#7E89A3` | text |
+| `BORDER` / `BORDER_S` | `#1D2440` / `#2E3758` | hairlines |
+| `CYAN` / `CTA` | `#3FC8F5` | accent, primary button |
+| `CTA_TEXT` | `#04121A` | text ON the cyan button |
+| `GREEN` | `#8FD152` | positive accent |
+| `MAROON` | `#8E1A38` | lifted; `#440115` is invisible here |
+
+**The brand cyan and green are brighter than in the light build.** They were
+darkened to pass contrast against white; against `#06080F` the bright
+originals are the legible ones and the dark variants fail. Likewise the
+primary button needs *dark* text — white on `#3FC8F5` is 1.95:1.
+
+### Check contrast after any colour change
+
+```
+python tools/audit_contrast.py
+```
+
+Walks every run of text, composites the translucent layers behind it to work
+out what is actually painted, and fails anything under WCAG AA. It caught
+four regressions during the conversion: the accordion's active title, the
+form's submit button, the counters and the header CTA. Text over photographs
+is counted separately and has to be judged by eye.

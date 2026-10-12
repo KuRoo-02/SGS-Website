@@ -105,11 +105,11 @@ SETTINGS = {
     "body_typography_font_size_mobile": px(16),
     "body_typography_font_weight": "400",
     "body_typography_line_height": {"unit": "em", "size": 1.65, "sizes": []},
-    "body_color": "#15191E",
+    "body_color": "#D3DAE8",
 
     # --- links ---
-    "link_normal_color": "#00769F",
-    "link_hover_color": "#005C7E",
+    "link_normal_color": "#3FC8F5",
+    "link_hover_color": "#7ADBFA",
 
     # --- headings inherit the display face ---
     "h1_typography_typography": "custom",
@@ -151,21 +151,70 @@ SETTINGS = {
     "button_typography_font_family": DISPLAY,
     "button_typography_font_size": px(15),
     "button_typography_font_weight": "600",
-    "button_text_color": "#FFFFFF",
-    "button_background_color": "#00769F",
+    "button_text_color": "#04121A",
+    "button_background_color": "#3FC8F5",
     "button_border_radius": box(8, 8, 8, 8),
     "button_text_padding": box(13, 26, 13, 26),
-    "button_hover_text_color": "#FFFFFF",
-    "button_background_hover_color": "#005C7E",
+    "button_hover_text_color": "#04121A",
+    "button_background_hover_color": "#7ADBFA",
 
     # Elementor has no min-height control for global buttons, and padding alone
     # rendered them at 39px. 44px is the tap-target floor, 48px is the design.
     # Focus ring and reduced-motion belong here too: Elementor respects neither
     # by default, and both are accessibility requirements rather than polish.
     "custom_css": (
+        # ---- dark space -------------------------------------------------
+        # The page itself is the night sky: a fixed starfield with three
+        # nebulae behind everything. Sections are translucent washes rather
+        # than solid fills, so this reads through the whole page instead of
+        # only behind the dark bands. Fixed, so it does not scroll with the
+        # content -- the stars stay put and the page moves over them.
+        " body{background:#06080F;color:#D3DAE8;}"
+        " body::before{content:'';position:fixed;inset:0;z-index:-2;"
+        "pointer-events:none;background-image:"
+        "radial-gradient(900px 600px at 12% 8%,rgba(0,176,236,.10),transparent 62%),"
+        "radial-gradient(760px 520px at 88% 32%,rgba(126,65,100,.10),transparent 60%),"
+        "radial-gradient(680px 480px at 70% 88%,rgba(126,191,65,.07),transparent 60%),"
+        "radial-gradient(1.4px 1.4px at 12% 14%,rgba(255,255,255,.85),transparent),"
+        "radial-gradient(1.2px 1.2px at 27% 62%,rgba(255,255,255,.65),transparent),"
+        "radial-gradient(1.6px 1.6px at 41% 23%,rgba(255,255,255,.80),transparent),"
+        "radial-gradient(1.1px 1.1px at 58% 77%,rgba(255,255,255,.55),transparent),"
+        "radial-gradient(1.5px 1.5px at 73% 41%,rgba(190,235,255,.80),transparent),"
+        "radial-gradient(1.2px 1.2px at 86% 68%,rgba(255,255,255,.60),transparent),"
+        "radial-gradient(1.3px 1.3px at 34% 89%,rgba(255,255,255,.55),transparent),"
+        "radial-gradient(1.7px 1.7px at 64% 11%,rgba(214,245,255,.85),transparent),"
+        "radial-gradient(1.1px 1.1px at 8% 47%,rgba(255,255,255,.50),transparent),"
+        "radial-gradient(1.4px 1.4px at 93% 19%,rgba(255,255,255,.70),transparent),"
+        "radial-gradient(1.2px 1.2px at 48% 52%,rgba(255,255,255,.45),transparent),"
+        "radial-gradient(1.5px 1.5px at 19% 79%,rgba(200,240,255,.65),transparent);"
+        "background-repeat:no-repeat,no-repeat,no-repeat,repeat,repeat,repeat,"
+        "repeat,repeat,repeat,repeat,repeat,repeat,repeat,repeat,repeat;"
+        "background-size:auto,auto,auto,620px 620px,540px 540px,700px 700px,"
+        "480px 480px,660px 660px,580px 580px,720px 720px,500px 500px,"
+        "640px 640px,560px 560px,680px 680px,600px 600px;}"
+
+        # Elementor widgets that hardcode a light surface of their own.
+        " .elementor-accordion .elementor-tab-title,"
+        " .elementor-accordion .elementor-tab-content{background:transparent;"
+        "border-color:#1D2440;}"
+        " .elementor-accordion .elementor-accordion-item{border-color:#1D2440;}"
+        " .elementor-field-group .elementor-field{background:rgba(255,255,255,.05)"
+        " !important;color:#E9EDF6 !important;border-color:#2E3758 !important;}"
+        " .elementor-field-group .elementor-field::placeholder{color:#7E89A3;}"
+        " .elementor-field-group select option{background:#0B0F1C;color:#E9EDF6;}"
+        " .elementor-posts .elementor-post__card{background:rgba(255,255,255,.045);"
+        "border-color:#1D2440;}"
+        " .elementor-posts .elementor-post__title a{color:#E9EDF6;}"
+        " .elementor-pagination .page-numbers{color:#A9B3C9;}"
+        " .elementor-pagination .page-numbers.current{color:#3FC8F5;}"
+        # photos sit a touch softer against the dark page
+        " .elementor-widget-image img,.elementor-widget-image-gallery img,"
+        " .elementor-posts .elementor-post__thumbnail img{"
+        "filter:brightness(.93) saturate(1.04);}"
+
         ".elementor-button{min-height:48px;display:inline-flex;align-items:center;"
         "justify-content:center;gap:10px;} "
-        ":focus-visible{outline:3px solid #00B0EC;outline-offset:3px;border-radius:2px;} "
+        ":focus-visible{outline:3px solid #3FC8F5;outline-offset:3px;border-radius:2px;} "
         "@media (prefers-reduced-motion:reduce){*,*::before,*::after{"
         "animation-duration:.01ms !important;animation-iteration-count:1 !important;"
         "transition-duration:.01ms !important;}"
@@ -196,6 +245,14 @@ SETTINGS = {
         " [data-elementor-type=footer] .elementor-icon-list-item>a{"
         "padding-top:7px;padding-bottom:7px;}"
 
+        # The hero scrim, deepened and cooled for the dark page. Elementor
+        # gives a two-stop overlay; the draft needs four stops plus a
+        # bottom-up wash, so it is written here instead.
+        " .sgs-hero::before{background-image:"
+        "linear-gradient(100deg,rgba(5,7,16,.95) 0%,rgba(5,7,16,.84) 38%,"
+        "rgba(5,7,16,.50) 72%,rgba(5,7,16,.38) 100%),"
+        "linear-gradient(to top,rgba(5,7,16,.80) 0%,transparent 42%);}"
+
         # --- phone ---
         " @media (max-width:767px){"
         # buttons stacked at their own content widths look ragged; matching
@@ -206,7 +263,7 @@ SETTINGS = {
         # desktop column; on a phone the copy sits over the whole photo, so
         # darken downward instead.
         "  .sgs-hero::before{"
-        "background-image:linear-gradient(180deg,rgba(36,0,11,.88),rgba(18,4,10,.80));}"
+        "background-image:linear-gradient(180deg,rgba(5,7,16,.90),rgba(5,7,16,.80));}"
         " }"
     ),
 

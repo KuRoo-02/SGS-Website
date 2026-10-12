@@ -96,7 +96,7 @@ FORM = W("form", {
     "button_width_tablet": "50",
     "button_width_mobile": "100",
     "button_background_color": CTA,
-    "button_text_color": "#FFFFFF",
+    "button_text_color": CTA_TEXT,
     "button_background_color_hover": CTA_H,
     "button_border_radius": box(8, 8, 8, 8),
     "button_text_padding": box(16, 30, 16, 30),
@@ -114,8 +114,8 @@ FORM = W("form", {
     "label_typography_font_weight": "600",
 
     "field_text_color": TEXT,
-    "field_background_color": "#FFFFFF",
-    "field_border_color": "#C9D1D9",
+    "field_background_color": "rgba(255,255,255,0.05)",
+    "field_border_color": BORDER_S,
     "field_border_width": box(1, 1, 1, 1, linked=True),
     "field_border_radius": box(8, 8, 8, 8),
     "field_typography_typography": "custom",
@@ -183,11 +183,11 @@ FACTS = [("Site reference", "SGS Ground Station (KL2)"),
 
 TABLE = ('<table style="width:100%;border-collapse:collapse;font-size:15px;">'
          "<tbody>" + "".join(
-    '<tr%s><th style="text-align:left;padding:13px 16px;color:#545C66;font-weight:600;'
+    '<tr%s><th style="text-align:left;padding:13px 16px;color:#A9B3C9;font-weight:600;'
     'font-size:13px;letter-spacing:.03em;text-transform:uppercase;border-bottom:1px solid '
-    '#E1E6EB;width:46%%;">%s</th><td style="padding:13px 16px;color:#15191E;'
-    'border-bottom:1px solid #E1E6EB;">%s</td></tr>'
-    % (' style="background:#F7F9FB;"' if i % 2 else "", k, v)
+    '#1D2440;width:46%%;">%s</th><td style="padding:13px 16px;color:#E9EDF6;'
+    'border-bottom:1px solid #1D2440;">%s</td></tr>'
+    % (' style="background:rgba(255,255,255,.035);"' if i % 2 else "", k, v)
     for i, (k, v) in enumerate(FACTS)) + "</tbody></table>")
 
 EL.append(section([split(

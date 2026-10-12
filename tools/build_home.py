@@ -16,18 +16,10 @@ def img(slug):
 def url(slug):
     return M.get(slug, {}).get("url", "")
 
-MAROON   = "#440115"
-MAROON_D = "#24000B"
-INK      = "#12040A"
-CYAN     = "#00B0EC"
-CTA      = "#00769F"
-GREEN    = "#7EBF41"
-GREEN_T  = "#4A7A1F"
-TEXT     = "#15191E"
-MUTED    = "#545C66"
-ON_DARK  = "#C0B2B7"
-BORDER   = "#E1E6EB"
-TINT     = "#F0F3F6"
+# Palette lives in sgs.py so the two files cannot drift apart again.
+from sgs import (MAROON, MAROON_D, INK, CYAN, CTA, CTA_H, CTA_TEXT, GREEN,
+                 GREEN_T, TEXT, MUTED, ON_DARK, BORDER, BORDER_S, TINT,
+                 SPACE, SPACE_ALT, SPACE_D, PANEL, PANEL_ALT, SURFACE)
 
 
 def C(children, **s):
@@ -115,8 +107,9 @@ def btn(text, link, variant="primary"):
          "typography_font_size": px(15), "typography_font_weight": "600",
          "border_radius": box(8, 8, 8, 8)}
     if variant == "primary":
-        s.update({"background_color": CTA, "button_text_color": "#FFFFFF",
-                  "background_hover_color": "#005C7E"})
+        s.update({"background_color": CTA, "button_text_color": CTA_TEXT,
+                  "background_hover_color": CTA_H,
+                  "button_hover_text_color": CTA_TEXT})
     elif variant == "maroon":
         s.update({"background_color": MAROON, "button_text_color": "#FFFFFF"})
     elif variant == "ghost-light":
@@ -128,7 +121,7 @@ def btn(text, link, variant="primary"):
         s.update({"background_background": "classic", "background_color": "#00000000",
                   "button_text_color": TEXT, "border_border": "solid",
                   "border_width": box(1.5, 1.5, 1.5, 1.5, linked=True),
-                  "border_color": "#C9D1D9"})
+                  "border_color": BORDER_S})
     return W("button", s)
 
 
@@ -164,9 +157,9 @@ def card(icon, title, body, link=None, dark=False, accent=CTA, cols=3):
     return C([W("icon-box", s)],
              content_width="full", **colw(cols),
              background_background="classic",
-             background_color="#FFFFFF0B" if dark else "#FFFFFF",
+             background_color=SURFACE,
              border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
-             border_color="#FFFFFF24" if dark else BORDER,
+             border_color=BORDER,
              border_radius=box(14, 14, 14, 14),
              padding=box(30, 28, 30, 28))
 
@@ -185,12 +178,13 @@ def section(children, dark=False, tint=False, pad=104, **extra):
              flex_gap=gap(0, 44))
     if dark:
         s.update(background_background="gradient",
-                 background_color=MAROON_D, background_color_b=INK,
+                 background_color="#0D1124", background_color_b=SPACE_D,
                  background_gradient_angle={"unit": "deg", "size": 160})
     elif tint:
-        s.update(background_background="classic", background_color=TINT)
+        s.update(background_background="classic", background_color=PANEL_ALT)
     else:
-        s.update(background_background="classic", background_color="#FFFFFF")
+        # a wash, not a fill, so the starfield reads through
+        s.update(background_background="classic", background_color=PANEL)
     s.update(extra)
     return C(children, **s)
 
@@ -278,17 +272,17 @@ EL.append(C([
 # -------------------------------------------------------- 2. LICENCES
 def lic(code, title, body):
     return C([
-        W("heading", {"title": code, "header_size": "div", "title_color": "#3F6619",
+        W("heading", {"title": code, "header_size": "div", "title_color": "#A8DE77",
                       "typography_typography": "custom", "typography_font_family": "Lexend",
                       "typography_font_size": px(14), "typography_font_weight": "700",
                       "typography_letter_spacing": px(0.6),
-                      "background_color": "#EEF7E4"}),
+                      "background_color": "rgba(126,191,65,.16)"}),
         C([W("heading", {"title": title, "header_size": "h4", "title_color": INK}),
            para(body)],
           content_width="full", width=px(100, "%"), flex_gap=gap(0, 4)),
     ], content_width="full", width=px(100, "%"),
        flex_direction="row", flex_gap=gap(16), flex_align_items="flex-start",
-       background_background="classic", background_color="#FFFFFF",
+       background_background="classic", background_color=SURFACE,
        border_border="solid", border_width=box(1, 1, 1, 4), border_color=BORDER,
        border_radius=box(8, 8, 8, 8), padding=box(22, 22, 22, 22))
 
@@ -454,7 +448,7 @@ def stat(num, suffix, label):
     return C([W("counter", {
         "starting_number": 0, "ending_number": num, "suffix": suffix, "title": label,
         "duration": 1400,
-        "number_color": MAROON,
+        "number_color": CYAN,
         "typography_number_typography": "custom",
         "typography_number_font_family": "Lexend",
         "typography_number_font_size": px(44),
@@ -463,7 +457,7 @@ def stat(num, suffix, label):
         "typography_title_typography": "custom",
         "typography_title_font_size": px(15),
     })], content_width="full", **colw(4),
-        background_background="classic", background_color="#FFFFFF",
+        background_background="classic", background_color=SURFACE,
         border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
         border_color=BORDER, padding=box(30, 22, 30, 22), text_align="center")
 
@@ -519,7 +513,7 @@ def prod_card(num, title, body):
         W("heading", {"title": title, "header_size": "h3", "title_color": INK}),
         para(body),
     ], content_width="full", **colw(3), flex_gap=gap(0, 10),
-       background_background="classic", background_color="#FFFFFF",
+       background_background="classic", background_color=SURFACE,
        border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
        border_color=BORDER, border_radius=box(14, 14, 14, 14), padding=box(30, 28, 30, 28))
 
@@ -578,7 +572,7 @@ EL.append(C([
     content_width="full",
     padding=box(84, 0, 84, 0), padding_mobile=box(56, 0, 56, 0),
     background_background="gradient",
-    background_color="#340010", background_color_b=INK,
+    background_color="#131A33", background_color_b=SPACE_D,
     background_gradient_angle={"unit": "deg", "size": 120},
 ))
 

@@ -117,7 +117,7 @@ single = [
       content_width="full",
       padding=box(96, 0, 96, 0), padding_mobile=box(60, 0, 60, 0),
       background_background="gradient", background_color=MAROON_D,
-      background_color_b=INK,
+      background_color_b=SPACE_D,
       background_gradient_angle={"unit": "deg", "size": 150}),
 
     # body + sidebar
@@ -126,7 +126,7 @@ single = [
             half([post_featured(image_size="large",
                                 image_border_radius=box(14, 14, 14, 14)),
                   W("theme-post-content", {
-                        "text_color": "#2A3039",
+                        "text_color": "#D3DAE8",
                         "typography_typography": "custom",
                         "typography_font_size": px(17),
                         "typography_line_height": {"unit": "em", "size": 1.75, "sizes": []}}),
@@ -163,7 +163,7 @@ single = [
                              title_typography_font_size=px(15),
                              title_typography_font_weight="600")],
                     content_width="full", width=px(100, "%"), flex_gap=gap(0, 14),
-                    background_background="classic", background_color="#FFFFFF",
+                    background_background="classic", background_color=SURFACE,
                     border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
                     border_color=BORDER, border_radius=box(14, 14, 14, 14),
                     padding=box(24, 24, 24, 24)),
@@ -181,7 +181,7 @@ single = [
                      btn("Contact us", "/contact-us/", "primary")],
                     content_width="full", width=px(100, "%"), flex_gap=gap(0, 12),
                     background_background="gradient", background_color="#340010",
-                    background_color_b=INK,
+                    background_color_b=SPACE_D,
                     background_gradient_angle={"unit": "deg", "size": 150},
                     border_radius=box(14, 14, 14, 14), padding=box(26, 26, 26, 26)),
                  ], width=px(34, "%"), width_tablet=px(100, "%"), flex_gap=gap(0, 24)),

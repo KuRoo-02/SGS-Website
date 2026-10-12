@@ -59,11 +59,11 @@ else:
 # --------------------------------------------------------------------------
 # openings
 # --------------------------------------------------------------------------
-LINK = ("color:#00769F;font-weight:600;text-decoration:none;"
-        "border-bottom:1px solid rgba(0,118,159,.4);padding-bottom:1px;")
-META = ("margin:0 0 18px;padding:10px 14px;background:#F0F3F6;border-radius:8px;"
-        "font-size:14.5px;color:#15191E;")
-H = "margin:22px 0 8px;font-family:Lexend,sans-serif;font-size:14px;font-weight:700;color:#15191E;"
+LINK = ("color:#3FC8F5;font-weight:600;text-decoration:none;"
+        "border-bottom:1px solid rgba(63,200,245,.45);padding-bottom:1px;")
+META = ("margin:0 0 18px;padding:10px 14px;background:rgba(255,255,255,.06);border-radius:8px;"
+        "font-size:14.5px;color:#E9EDF6;")
+H = "margin:22px 0 8px;font-family:Lexend,sans-serif;font-size:14px;font-weight:700;color:#E9EDF6;"
 UL = "margin:0;padding-left:20px;line-height:1.7;"
 
 
@@ -159,7 +159,7 @@ EL.append(section([
     C([W("accordion", {
         "tabs": OPENINGS,
         "selected_icon": ico("plus"), "selected_active_icon": ico("minus"),
-        "title_color": INK, "tab_active_color": MAROON,
+        "title_color": INK, "tab_active_color": CYAN,
         "content_color": MUTED,
         "border_color": BORDER,
         "title_typography_typography": "custom",
@@ -215,7 +215,7 @@ EL.append(C([
     content_width="full",
     padding=box(84, 0, 84, 0), padding_mobile=box(56, 0, 56, 0),
     background_background="gradient", background_color="#340010",
-    background_color_b=INK,
+    background_color_b=SPACE_D,
     background_gradient_angle={"unit": "deg", "size": 120}))
 
 c, _ = wp.put_layout(PID, EL)

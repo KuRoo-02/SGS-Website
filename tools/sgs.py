@@ -10,21 +10,42 @@ Notes that cost time and are encoded here so they are not rediscovered:
 """
 from wpb import eid, px, box, gap
 
-MAROON   = "#440115"
-MAROON_D = "#24000B"
-INK      = "#12040A"
-CYAN     = "#00B0EC"
-CTA      = "#00769F"
-CTA_H    = "#005C7E"
-GREEN    = "#7EBF41"
-GREEN_T  = "#4A7A1F"
-GREEN_D  = "#3F6619"
-TEXT     = "#15191E"
-MUTED    = "#545C66"
-SUBTLE   = "#666D76"
-ON_DARK  = "#C0B2B7"
-BORDER   = "#E1E6EB"
-TINT     = "#F0F3F6"
+# ---------------------------------------------------------------------------
+# Dark space palette, ported from the draft's :root[data-theme="dark"] block.
+#
+# The page background is a fixed starfield set in the kit's CSS, so sections
+# are translucent washes rather than solid fills -- that is what lets the
+# stars read through the whole page instead of only behind the bands.
+#
+# The brand cyan and green are BRIGHTER here than in the light build. They
+# were darkened to pass contrast against white; against #06080F the bright
+# originals are the legible ones and the dark variants fail.
+# ---------------------------------------------------------------------------
+SPACE     = "#06080F"                    # page background
+SPACE_ALT = "#0B0F1C"
+SPACE_D   = "#05070E"                    # dark end of every gradient
+PANEL     = "rgba(255,255,255,0.030)"    # a "light" section
+PANEL_ALT = "rgba(255,255,255,0.015)"    # a "tint" section
+SURFACE   = "rgba(255,255,255,0.045)"    # cards
+
+MAROON   = "#8E1A38"      # lifted; #440115 is invisible on a dark page
+MAROON_D = "#131A33"
+INK      = "#E9EDF6"      # headings
+TEXT     = "#E9EDF6"
+MUTED    = "#A9B3C9"
+SUBTLE   = "#7E89A3"
+ON_DARK  = "#A9B3C9"
+BORDER   = "#1D2440"
+BORDER_S = "#2E3758"
+TINT     = PANEL_ALT
+
+CYAN     = "#3FC8F5"
+CTA      = "#3FC8F5"      # primary button fill...
+CTA_H    = "#7ADBFA"
+CTA_TEXT = "#04121A"      # ...which needs dark text, not white
+GREEN    = "#8FD152"
+GREEN_T  = "#8FD152"
+GREEN_D  = "#A8DE77"
 
 COLW = {2: (48, 48, 100), 3: (31.5, 48, 100), 4: (23.2, 48, 100)}
 
@@ -139,8 +160,10 @@ def btn(text, link, variant="primary"):
          "typography_font_size": px(15), "typography_font_weight": "600",
          "border_radius": box(8, 8, 8, 8)}
     if variant == "primary":
-        s.update({"background_color": CTA, "button_text_color": "#FFFFFF",
-                  "background_hover_color": CTA_H})
+        # bright cyan needs dark text; white on #3FC8F5 fails contrast
+        s.update({"background_color": CTA, "button_text_color": CTA_TEXT,
+                  "background_hover_color": CTA_H,
+                  "button_hover_text_color": CTA_TEXT})
     elif variant == "maroon":
         s.update({"background_color": MAROON, "button_text_color": "#FFFFFF"})
     elif variant == "ghost-light":
@@ -152,7 +175,7 @@ def btn(text, link, variant="primary"):
         s.update({"background_background": "classic", "background_color": "#00000000",
                   "button_text_color": TEXT, "border_border": "solid",
                   "border_width": box(1.5, 1.5, 1.5, 1.5, linked=True),
-                  "border_color": "#C9D1D9"})
+                  "border_color": BORDER_S})
     return W("button", s)
 
 
@@ -193,9 +216,9 @@ def card(icon, title, body, link=None, dark=False, accent=CTA, cols=3):
         s["link"] = {"url": link}
     return C([W("icon-box", s)], content_width="full", **colw(cols),
              background_background="classic",
-             background_color="#FFFFFF0B" if dark else "#FFFFFF",
+             background_color=SURFACE,
              border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
-             border_color="#FFFFFF24" if dark else BORDER,
+             border_color=BORDER,
              border_radius=box(14, 14, 14, 14), padding=box(30, 28, 30, 28))
 
 
@@ -211,9 +234,9 @@ def plain_card(tag, title, body, dark=False, cols=3, tag_color=None):
     kids += [h3(title, dark), para(body, dark, size=15.5)]
     return C(kids, content_width="full", **colw(cols), flex_gap=gap(0, 10),
              background_background="classic",
-             background_color="#FFFFFF0B" if dark else "#FFFFFF",
+             background_color=SURFACE,
              border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
-             border_color="#FFFFFF24" if dark else BORDER,
+             border_color=BORDER,
              border_radius=box(14, 14, 14, 14), padding=box(30, 28, 30, 28))
 
 
@@ -227,13 +250,14 @@ def section(children, dark=False, tint=False, pad=104, anchor=None, **extra):
              padding_tablet=box(72, 0, 72, 0), padding_mobile=box(56, 0, 56, 0),
              flex_gap=gap(0, 44))
     if dark:
-        s.update(background_background="gradient", background_color=MAROON_D,
-                 background_color_b=INK,
+        s.update(background_background="gradient", background_color="#0D1124",
+                 background_color_b=SPACE_D,
                  background_gradient_angle={"unit": "deg", "size": 160})
     elif tint:
-        s.update(background_background="classic", background_color=TINT)
+        s.update(background_background="classic", background_color=PANEL_ALT)
     else:
-        s.update(background_background="classic", background_color="#FFFFFF")
+        # a wash, not a fill, so the starfield behind it stays visible
+        s.update(background_background="classic", background_color=PANEL)
     if anchor:
         s["_element_id"] = anchor
     s.update(extra)
@@ -263,8 +287,8 @@ def page_hero(crumb, eb, title, lead):
           flex_gap=gap(0, 14), padding=box(0, 24, 0, 24))],
         content_width="full",
         padding=box(104, 0, 104, 0), padding_mobile=box(64, 0, 64, 0),
-        background_background="gradient", background_color=MAROON_D,
-        background_color_b=INK,
+        background_background="gradient", background_color="#0D1124",
+        background_color_b=SPACE_D,
         background_gradient_angle={"unit": "deg", "size": 150})
 
 
@@ -307,8 +331,8 @@ def cta_band():
           flex_gap=gap(48), padding=box(0, 24, 0, 24), **STACK_TABLET)],
         content_width="full",
         padding=box(84, 0, 84, 0), padding_mobile=box(56, 0, 56, 0),
-        background_background="gradient", background_color="#340010",
-        background_color_b=INK,
+        background_background="gradient", background_color="#131A33",
+        background_color_b=SPACE_D,
         background_gradient_angle={"unit": "deg", "size": 120})
 
 
@@ -380,7 +404,7 @@ def feed_empty(title, body, on_tint=False):
               flex_gap=gap(0, 12), flex_align_items="center", text_align="center",
               padding=box(46, 28, 46, 28),
               background_background="classic",
-              background_color="#FFFFFF" if on_tint else TINT,
+              background_color=SURFACE,
               border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
               border_color=BORDER, border_radius=box(14, 14, 14, 14))
     # The gutter has to be padding on the boxed wrapper, not margin on the

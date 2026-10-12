@@ -12,12 +12,13 @@ LOGO = media.get("sgs-logo", {})
 LOGO_LIGHT = media.get("sgs-logo-light", {})
 print("logo id=%s  logo-light id=%s  menu id=%s" % (LOGO.get("id"), LOGO_LIGHT.get("id"), menu_id))
 
-MAROON_DEEP = "#24000B"
-INK_DEEP = "#12040A"
-ON_DARK = "#C0B2B7"
-CYAN = "#00B0EC"
-GREEN = "#7EBF41"
-CTA = "#00769F"
+# Palette comes from sgs.py; this file used to keep a second copy of it,
+# which is how the header kept its light-theme colours after the site went
+# dark. The topbar and footer get their own space tones.
+from sgs import ON_DARK, CYAN, GREEN, CTA, CTA_TEXT, SPACE_ALT, BORDER
+
+MAROON_DEEP = SPACE_ALT                 # topbar
+INK_DEEP = "rgba(0,0,0,0.45)"           # footer, lifted off the starfield
 
 
 def ico(name, lib="fa-solid"):
@@ -92,7 +93,7 @@ topbar = container([
 # an explicit width or it claims the whole row and pushes the nav off-screen.
 brand = container([
     widget("image", {
-        "image": {"id": LOGO.get("id"), "url": LOGO.get("url")},
+        "image": {"id": LOGO_LIGHT.get("id"), "url": LOGO_LIGHT.get("url")},
         "width": px(130),
         "image_size": "medium",
         "link_to": "custom",
@@ -100,9 +101,9 @@ brand = container([
     }),
     widget("text-editor", {
         "editor": ('<p style="margin:0;line-height:1.25;font-family:Lexend,sans-serif;'
-                   'font-weight:600;font-size:15px;color:#15191E;">'
+                   'font-weight:600;font-size:15px;color:#E9EDF6;">'
                    'Satcom Gateway Services</p>'
-                   '<p style="margin:0;line-height:1.3;font-size:12px;color:#666D76;">'
+                   '<p style="margin:0;line-height:1.3;font-size:12px;color:#7E89A3;">'
                    'Sdn Bhd &middot; Malaysia</p>'),
         "hide_mobile": "hidden-mobile",
     }),
@@ -127,22 +128,22 @@ main_bar = container([
             "menu_typography_font_family": "Lexend",
             "menu_typography_font_size": px(15),
             "menu_typography_font_weight": "500",
-            "color_menu_item": "#15191E",
-            "color_menu_item_hover": "#440115",
-            "color_menu_item_active": "#440115",
+            "color_menu_item": "#A9B3C9",
+            "color_menu_item_hover": "#FFFFFF",
+            "color_menu_item_active": "#FFFFFF",
             "pointer_color_menu_item_hover": CYAN,
             "pointer_color_menu_item_active": CYAN,
             "padding_horizontal_menu_item": px(14),
             "toggle_align": "right",
             "toggle_size": px(22),
-            "toggle_color": "#15191E",
+            "toggle_color": "#E9EDF6",
         }),
         widget("button", {
             "text": "Talk to our team",
             "link": {"url": "/contact-us/"},
             "text_padding": box(16, 26, 16, 26),
             "background_color": CTA,
-            "button_text_color": "#FFFFFF",
+            "button_text_color": CTA_TEXT,
             "hide_tablet": "hidden-tablet",
             "hide_mobile": "hidden-mobile",
         }),
@@ -159,10 +160,10 @@ main_bar = container([
 ],
     content_width="full",
     background_background="classic",
-    background_color="#FFFFFF",
+    background_color="rgba(8,11,22,.86)",
     border_border="solid",
     border_width=box(0, 0, 1, 0),
-    border_color="#E1E6EB",
+    border_color="#1D2440",
     sticky="top",
     sticky_on=["desktop", "tablet", "mobile"],
     sticky_offset=0,
