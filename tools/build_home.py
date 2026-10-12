@@ -364,9 +364,9 @@ EL.append(section([
 
 # -------------------------------------------------------- 5. FLEET (dark)
 FLEET = [
-    ("GEO &middot; 138&deg;E", "APStar-5C", "FS-1300 platform, 34 C-band and 32 Ku-band transponders, regional Ku-HTS payload, 15+ year design life."),
-    ("GEO &middot; 134&deg;E", "APStar-6D", "Five-beam Ku-band user payload with a Ka-band gateway over Kuala Lumpur, optimised for aero and maritime mobility."),
-    ("GEO", "APStar-9", "Broad regional coverage supporting video distribution, data and telecom services across the Asia-Pacific."),
+    ("GEO &middot; 138&deg;E", "APStar-5C", "C-band plus Ku-band HTS and Indonesia beams. FS-1300 platform, 15+ year design life."),
+    ("GEO &middot; 134&deg;E", "APStar-6D", "Ku-band HTS. Five-beam user payload with a Ka-band gateway over Kuala Lumpur, optimised for aero and maritime mobility."),
+    ("GEO &middot; 142&deg;E", "APStar-9", "C-band and Ku-band West beam. Video distribution, data and telecom services across the Asia-Pacific."),
     ("LEO Constellation", "SPACESAIL", "Low-latency LEO capacity building toward a 648-satellite constellation, hosted through the SGS LEO gateway."),
 ]
 def fleet_card(tag, title, body):
@@ -384,12 +384,12 @@ def fleet_card(tag, title, body):
        padding=box(30, 28, 30, 28))
 
 EL.append(section([
-    head_block("Satellite fleet", "GEO reach and LEO responsiveness, from one gateway.",
+    head_block("Satellite fleet", "Eight beams across five APStar satellites, plus LEO.",
                "SGS provides gateway hosting and capacity across the APStar geostationary fleet "
                "and the SPACESAIL low-earth-orbit constellation &mdash; so a single commercial "
                "relationship can cover both.", dark=True),
     grid([fleet_card(*f) for f in FLEET], cols=4, g=28),
-    C([btn("See our capacity &amp; fleet options", "/our-services/#capacity", "primary")],
+    C([btn("See the full fleet", "/our-services/#fleet", "primary")],
       content_width="boxed", padding=box(0, 24, 0, 24)),
 ], dark=True))
 

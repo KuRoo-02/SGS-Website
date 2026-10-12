@@ -57,8 +57,9 @@ PAGES = [
          crumbs=[("About Us", "/about-us/")]),
     dict(slug="services", path="/our-services/", page="our-services",
          ogtitle="Teleport, gateway hosting, capacity and colocation",
-         desc="Gateway hosting, satellite capacity leasing across APStar and SPACESAIL, "
-              "broadband, backhaul, mobility and data centre colocation from Malaysia.",
+         desc="Gateway hosting and capacity on eight APStar beams across five "
+              "satellites, plus broadband, backhaul, mobility and data centre "
+              "colocation from Rantau, Malaysia.",
          crumbs=[("Our Services", "/our-services/")]),
     dict(slug="news", path="/news-events/", page="news-events",
          ogtitle="SGS news and events",
