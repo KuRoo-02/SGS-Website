@@ -364,10 +364,10 @@ EL.append(section([
 
 # -------------------------------------------------------- 5. FLEET (dark)
 FLEET = [
-    ("GEO &middot; 138&deg;E", "APStar-5C", "C-band plus Ku-band HTS and Indonesia beams. FS-1300 platform, 15+ year design life."),
-    ("GEO &middot; 134&deg;E", "APStar-6D", "Ku-band HTS. Five-beam user payload with a Ka-band gateway over Kuala Lumpur, optimised for aero and maritime mobility."),
-    ("GEO &middot; 142&deg;E", "APStar-9", "C-band and Ku-band West beam. Video distribution, data and telecom services across the Asia-Pacific."),
-    ("LEO Constellation", "SPACESAIL", "Low-latency LEO capacity building toward a 648-satellite constellation, hosted through the SGS LEO gateway."),
+    ("GEO &middot; 138&deg;E", "APStar-5C", "C-band, Ku HTS beam and Ku ID beam. FS-1300 platform, 34 C-band and 32 Ku-band transponders, 15+ year design life."),
+    ("GEO &middot; 134&deg;E", "APStar-6D", "Five Malaysia beams with a Ku-band user beam and a Ka-band gateway beam over Kuala Lumpur, optimised for aero and maritime mobility."),
+    ("GEO &middot; 142&deg;E", "APStar-9", "C-band and Ku West beam. DFH-4 platform, in service since November 2015, 15-year lifetime."),
+    ("LEO Constellation", "SPACESAIL", "90 commercial satellites on orbit and building toward 648, hosted through the SGS LEO gateway."),
 ]
 def fleet_card(tag, title, body):
     return C([

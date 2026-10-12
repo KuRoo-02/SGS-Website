@@ -11,91 +11,128 @@ def img(s): m = M.get(s, {}); return {"id": m.get("id"), "url": m.get("url")}
 EL = []
 
 # ---------------------------------------------------------------------------
-# The confirmed SGS fleet: (satellite, slot, coverage, [beams SGS holds]).
+# The fleet, from SGS Company Profile 2026 and the client's confirmed beam
+# list. Names are kept exactly as those sources write them: "APStar-5C", not
+# "APSTAR-5C", and "Ku ID beam" rather than a guess at what ID stands for.
 #
-# Orbital slots and coverage regions are APStar's own published figures. The
-# beams are the confirmed SGS list. Nothing here quotes EIRP, G/T or
-# transponder counts -- those were not supplied, and inventing them on a live
-# operator's site would be worse than leaving them out, so the section points
-# at the engineering team for footprints and link budgets instead.
+# Every figure below is transcribed from the profile. APStar-6C and APStar-7
+# appear only in the confirmed beam list, so they carry the band and nothing
+# more -- no slot, no coverage, because neither was supplied.
 # ---------------------------------------------------------------------------
 FLEET = [
-    ("APSTAR-5C", "138&deg;E",
-     "Asia, Oceania, the Pacific islands and Hawaii. FS-1300 platform, in service "
-     "since 2018 with a design life beyond 15 years.",
-     ["C-band", "Ku-band HTS beam", "Ku-band Indonesia beam"]),
-    ("APSTAR-6C", "134&deg;E",
-     "Asia, Oceania, the Pacific islands and Hawaii.",
-     ["C-band"]),
-    ("APSTAR-6D", "134&deg;E",
-     "Centred on China and reaching across the Asia-Pacific, from the eastern Indian "
-     "Ocean to the western Pacific. Five-beam Ku-band user payload with a Ka-band "
-     "gateway beam over Kuala Lumpur.",
-     ["Ku-band HTS"]),
-    ("APSTAR-7", "76.5&deg;E",
-     "Asia, Australia, Europe and Africa &mdash; the widest reach in the fleet, and "
-     "the route west out of the region.",
-     ["C-band"]),
-    ("APSTAR-9", "142&deg;E",
-     "Asia, Oceania, the Pacific islands and Hawaii. Carries video distribution, data "
-     "and telecom services across the region.",
-     ["C-band", "Ku-band West beam"]),
-    ("SPACESAIL", "Low Earth Orbit",
-     "Low-latency capacity building toward a 648-satellite constellation, landed "
-     "through the SGS LEO gateway on the Rantau roof.",
-     ["LEO gateway hosting", "Hybrid GEO&ndash;LEO routing"]),
+    ("APStar-5C", "138&deg;E",
+     "FS-1300 platform, in service since the first half of 2018 with a design life "
+     "beyond 15 years. 34 C-band and 32 Ku-band transponders plus a regional Ku-HTS "
+     "payload.",
+     [("Peak EIRP", "C-band 41&nbsp;dBW &middot; Ku-band 58&nbsp;dBW"),
+      ("Peak G/T", "C-band 0&nbsp;dB/K &middot; Ku-band 12&nbsp;dB/K"),
+      ("Gain control", "FGM and ALC"),
+      ("Polarization", "Dual linear")],
+     ["C-band", "Ku HTS beam", "Ku ID beam"]),
+
+    ("APStar-6D", "134&deg;E",
+     "Launched 2019, with the gateway in Kuala Lumpur. Optimised for mobility "
+     "services, especially aeronautical and maritime.",
+     [("Malaysia beams", "5 beams &mdash; 40, 51, 54, 55, 57"),
+      ("User beam", "Ku-band"),
+      ("Gateway beam", "Ka-band"),
+      ("Gateway", "Kuala Lumpur")],
+     ["Ku-band user beam"]),
+
+    ("APStar-9", "142&deg;E",
+     "DFH-4 platform, in service since 18 November 2015, with a 15-year lifetime and "
+     "station keeping of &plusmn;0.05&deg;.",
+     [("C-band", "2 fixed beams &mdash; SEA beam over Indonesia, Malaysia and PNG; "
+                 "AP beam across the Asia Pacific region"),
+      ("Ku-band", "3 fixed beams &mdash; West, North and South &mdash; plus 1 "
+                  "elliptical steerable"),
+      ("EIRP", "SEA beam 41&ndash;44&nbsp;dBW &middot; West beam 45&ndash;49&nbsp;dBW"),
+      ("Channel control", "FGM / ALC")],
+     ["C-band", "Ku West beam"]),
+
+    ("APStar-6C", None,
+     "Part of the confirmed SGS fleet. Detailed parameters available from our "
+     "engineering team on request.",
+     [], ["C-band"]),
+
+    ("APStar-7", None,
+     "Part of the confirmed SGS fleet. Detailed parameters available from our "
+     "engineering team on request.",
+     [], ["C-band"]),
+
+    ("SPACESAIL", "LEO Constellation",
+     "90 commercial satellites on orbit and building toward 648, landed through the "
+     "SGS LEO gateway at Rantau.",
+     [], ["LEO gateway hosting", "Hybrid GEO&ndash;LEO routing"]),
 ]
 
-BEAMS = [(sat, slot, beam)
-         for sat, slot, _cov, beams in FLEET[:-1] for beam in beams]
+BEAMS = [(sat, beam) for sat, _slot, _d, _specs, beams in FLEET[:-1] for beam in beams]
 
 
-def sat_card(name, slot, coverage, beams, cols=3):
-    """The orbital slot carries the card instead of a photograph: there is no
-    per-satellite imagery in the library, and on the dark page the slot set in
-    cyan reads better than a stock dish would."""
-    return C([
-        W("heading", {"title": slot, "header_size": "div", "title_color": CYAN,
-                      "typography_typography": "custom",
-                      "typography_font_family": "Lexend",
-                      "typography_font_size": px(25),
-                      "typography_font_weight": "600"}),
-        h3(name, size=21),
-        para(coverage, size=15),
-        W("divider", {"color": BORDER, "weight": px(1), "gap": px(13)}),
-        W("heading", {"title": "SGS capacity", "header_size": "div",
-                      "title_color": SUBTLE,
-                      "typography_typography": "custom",
-                      "typography_font_family": "Lexend",
-                      "typography_font_size": px(11),
-                      "typography_font_weight": "700",
-                      "typography_letter_spacing": px(1.4),
-                      "typography_text_transform": "uppercase"}),
-        ticks(beams),
-    ], content_width="full", **colw(cols), flex_gap=gap(0, 8),
-       background_background="classic", background_color=SURFACE,
-       border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
-       border_color=BORDER, border_radius=box(14, 14, 14, 14),
-       padding=box(28, 26, 30, 26))
+def _spec_list(specs):
+    rows = []
+    for k, v in specs:
+        rows.append(
+            # border:0 because the theme puts a hairline on every th/td and a
+            # spec list wants to read as prose, not as a nested table
+            '<tr><th style="text-align:left;vertical-align:top;border:0;'
+            'padding:5px 14px 5px 0;color:#7E89A3;font-weight:600;'
+            'font-size:12.5px;white-space:nowrap;">'
+            + k + '</th><td style="border:0;padding:5px 0;color:#D3DAE8;'
+            'font-size:13.5px;">'
+            + v + "</td></tr>")
+    return ('<table style="width:100%;border-collapse:collapse;">'
+            + "".join(rows) + "</table>")
 
 
-# Built by concatenation rather than %-formatting: the stylesheet is full of
+def sat_card(name, slot, blurb, specs, beams, cols=3):
+    """The orbital slot carries the card instead of a photograph -- there is no
+    per-satellite imagery in the materials, and the slot set in cyan says more
+    than a stock dish would."""
+    kids = [W("heading", {"title": slot or "&nbsp;", "header_size": "div",
+                          "title_color": CYAN if slot else "#00000000",
+                          "typography_typography": "custom",
+                          "typography_font_family": "Lexend",
+                          "typography_font_size": px(24),
+                          "typography_font_weight": "600"}),
+            h3(name, size=21),
+            para(blurb, size=15)]
+    if specs:
+        kids.append(W("html", {"html": _spec_list(specs)}))
+    kids += [W("divider", {"color": BORDER, "weight": px(1), "gap": px(13)}),
+             W("heading", {"title": "SGS capacity", "header_size": "div",
+                           "title_color": SUBTLE,
+                           "typography_typography": "custom",
+                           "typography_font_family": "Lexend",
+                           "typography_font_size": px(11),
+                           "typography_font_weight": "700",
+                           "typography_letter_spacing": px(1.4),
+                           "typography_text_transform": "uppercase"}),
+             ticks(beams)]
+    return C(kids, content_width="full", **colw(cols), flex_gap=gap(0, 8),
+             background_background="classic", background_color=SURFACE,
+             border_border="solid", border_width=box(1, 1, 1, 1, linked=True),
+             border_color=BORDER, border_radius=box(14, 14, 14, 14),
+             padding=box(28, 26, 30, 26))
+
+
+# Built by concatenation, not %-formatting: the inline styles are full of
 # percent signs and every one would need doubling.
 _TH = ("text-align:left;padding:13px 16px;color:#A9B3C9;font-size:12.5px;"
        "letter-spacing:.06em;text-transform:uppercase;font-weight:700;"
        "border-bottom:1px solid #2E3758;")
 _TD = "padding:13px 16px;color:#E9EDF6;border-bottom:1px solid #1D2440;"
 _rows = []
-for _i, (_sat, _slot, _beam) in enumerate(BEAMS):
+for _i, (_sat, _beam) in enumerate(BEAMS):
     _zebra = ' style="background:rgba(255,255,255,.035);"' if _i % 2 else ""
     _rows.append("<tr" + _zebra + ">"
-                 '<td style="' + _TD + 'font-weight:600;white-space:nowrap;">' + _sat + "</td>"
-                 '<td style="' + _TD + 'color:#3FC8F5;font-weight:600;white-space:nowrap;">' + _slot + "</td>"
+                 '<td style="' + _TD + 'font-weight:600;white-space:nowrap;">'
+                 + _sat + "</td>"
                  '<td style="' + _TD + '">' + _beam + "</td></tr>")
-BEAM_TABLE = ('<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:15px;">'
+BEAM_TABLE = ('<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">'
+              '<table style="width:100%;border-collapse:collapse;font-size:15px;">'
               "<thead><tr>"
               '<th style="' + _TH + '">Satellite</th>'
-              '<th style="' + _TH + '">Orbital slot</th>'
               '<th style="' + _TH + '">Band / beam</th>'
               "</tr></thead><tbody>" + "".join(_rows) + "</tbody></table></div>")
 
@@ -112,7 +149,7 @@ IDX = [("01", "Teleport &amp; Gateway Services", "#gateway"),
        ("02", "Satellite Capacity Leasing", "#capacity"),
        ("03", "Satellite Broadband, Enterprise &amp; Backhaul", "#broadband"),
        ("04", "Satellite Mobility", "#mobility"),
-       ("05", "Data Centre &amp; Colocation", "#datacentre"),
+       ("05", "Data Centre &amp; Colocation Services", "#datacentre"),
        ("06", "Technical &amp; Ground-Segment Services", "#technical")]
 
 def idx_card(num, title, link):
@@ -135,10 +172,10 @@ EL.append(section([grid([idx_card(*i) for i in IDX], g=20)], tint=True, pad=64))
 # The fleet is the thing customers arrive looking for, so it gets a band of
 # its own above the service detail rather than only a section further down.
 EL.append(C([
-    C([C([eyebrow("Satellite fleet", dark=True),
+    C([C([eyebrow("SGS Satellite Fleet", dark=True),
           h2("%d beams across five APStar satellites." % len(BEAMS), dark=True, size=30),
-          para("C-band, Ku-band and Ku-HTS capacity between 76.5&deg;E and 142&deg;E, "
-               "landed at the SGS teleport in Rantau.", dark=True)],
+          para("C-band, Ku-band and Ku-HTS capacity, landed at the SGS teleport "
+               "in Rantau.", dark=True)],
          content_width="full", width=px(62, "%"), width_tablet=px(100, "%"),
          flex_gap=gap(0, 10)),
        C([btn("See the fleet", "#fleet", "primary"),
@@ -201,12 +238,11 @@ EL.append(section([
 
 # --- the fleet, in full ---------------------------------------------------
 EL.append(section([
-    head_block("Satellite fleet",
-               "%d beams across five APStar satellites." % len(BEAMS),
-               "Four orbital slots between 76.5&deg;E and 142&deg;E reach from Africa and "
-               "Europe in the west to Hawaii in the east. Every beam below is landed at "
-               "the SGS teleport, so the space segment and the ground segment come from "
-               "one site and one engineering team.", center=True),
+    head_block("SGS Satellite Fleet",
+               "The fleet, satellite by satellite.",
+               "Every beam below is landed at the SGS teleport, so the space segment and "
+               "the ground segment come from one site and one engineering team. "
+               "Figures are from the SGS company profile.", center=True),
     grid([sat_card(*f) for f in FLEET[:3]], g=28),
     grid([sat_card(*f) for f in FLEET[3:]], g=28),
 ], anchor="fleet"))
