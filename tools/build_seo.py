@@ -59,7 +59,7 @@ PAGES = [
          ogtitle="Teleport, gateway hosting, capacity and colocation",
          desc="Gateway hosting and capacity on eight APStar beams across five "
               "satellites, plus broadband, backhaul, mobility and data centre "
-              "colocation from Rantau, Malaysia.",
+              "colocation from Malaysia.",
          crumbs=[("Our Services", "/our-services/")]),
     dict(slug="news", path="/news-events/", page="news-events",
          ogtitle="SGS news and events",
