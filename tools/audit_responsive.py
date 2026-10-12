@@ -136,6 +136,9 @@ def run(names):
                 pg = b.new_page(viewport={"width": w, "height": 900},
                                 device_scale_factor=2, is_mobile=(w < 600),
                                 has_touch=(w < 600))
+                # the preloader would otherwise cover every page these
+                # tools measure; mark the session as already greeted
+                pg.add_init_script("try{sessionStorage.setItem('sgs-seen','1')}catch(e){}")
                 pg.goto(BASE + path, wait_until="load", timeout=90000)
                 pg.wait_for_timeout(1800)
                 d = pg.evaluate(PROBE, minchild)

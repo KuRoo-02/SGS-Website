@@ -341,3 +341,38 @@ descriptions from the post editor, run the Rank Math wizard and delete the
 - **Share images** — `tools/make_og_images.py` writes 1200×630 cards so
   LinkedIn and X stop cropping the 4:3 facility photos arbitrarily.
 - **Sitemap** — WordPress core at `/wp-sitemap.xml`, already in `robots.txt`.
+
+---
+
+## Preloader
+
+Built by `tools/build_preloader.py` as two **Elementor → Custom Code**
+snippets: `SGS preloader - styles` in `<head>` and `SGS preloader` at body
+start. The CSS has to land first or the overlay paints unstyled for a frame.
+
+The sequence is the draft's: orbits draw in, satellites begin tracking,
+signal waves answer, the status line advances, the link locks. Pure CSS and
+SVG — the only JavaScript is the dismiss timer.
+
+Behaviour:
+
+- **Once per browsing session.** It greets a visitor on arrival and then
+  stays out of the way for every page after that (`sessionStorage`). A 5s
+  hold on every page view would be punishing.
+- **Never in the Elementor editor**, which would otherwise freeze the page
+  for five seconds on every edit.
+- **Skipped entirely** for anyone with reduced motion turned on.
+- **Fails open.** A CSS animation clears the overlay at 6.6s even if the
+  JavaScript never runs, so a script error can never leave a visitor
+  staring at a locked screen.
+
+### Changing the duration
+
+One value: `DURATION` at the top of `build_preloader.py`. The bar, the
+status cross-fades and the lock flash are all expressed as percentages of
+it, so they rescale together. Re-run the script afterwards.
+
+**Worth knowing:** five seconds is a long hold for a first-time visitor, and
+the overlay is what Google measures as the largest paint on arrival, so it
+works against the Core Web Vitals score. 2–3s keeps the effect and costs
+much less. Flagged rather than changed — it is a brand call, not a bug.

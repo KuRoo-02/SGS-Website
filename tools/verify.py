@@ -57,6 +57,9 @@ def run(names, shots, widths):
                 BASE + "/" + name.lstrip("/")
             for w, label in widths:
                 pg = b.new_page(viewport={"width": w, "height": 1000})
+                # the preloader would otherwise cover every page these
+                # tools measure; mark the session as already greeted
+                pg.add_init_script("try{sessionStorage.setItem('sgs-seen','1')}catch(e){}")
                 errs = []
                 pg.on("console", lambda m: m.type == "error" and errs.append(m.text[:140]))
                 pg.on("pageerror", lambda e: errs.append("JS: " + str(e)[:140]))
