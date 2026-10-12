@@ -16,6 +16,7 @@ PAGES = {
     "about":    "/about-us/",
     "services": "/our-services/",
     "news":     "/news-events/",
+    "careers":  "/careers/",
     "contact":  "/contact-us/",
 }
 WIDTHS = [(1440, "desktop"), (820, "tablet"), (390, "mobile")]

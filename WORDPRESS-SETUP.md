@@ -376,3 +376,55 @@ it, so they rescale together. Re-run the script afterwards.
 the overlay is what Google measures as the largest paint on arrival, so it
 works against the Core Web Vitals score. 2–3s keeps the effect and costs
 much less. Flagged rather than changed — it is a brand call, not a bug.
+
+---
+
+## Careers
+
+Built by `tools/build_careers.py`. Page `/careers/`, in the main menu between
+News & Events and Contact Us. Modelled on APStar's career-development page
+— intro, why join, openings, how to apply — with one change: the vacancies
+are an accordion rather than one long stack of text, so a visitor can see
+every role at a glance and open only the one they want.
+
+### ⚠ The listed vacancy is placeholder content
+
+**Teleport Operations Engineer** was written as a sample. It reads as a real
+job on a public site, so replace it with a genuine opening or remove it
+before the page is promoted — otherwise it will collect applications for a
+job that does not exist.
+
+### Adding, editing or removing a role
+
+Edit the page in Elementor and open the Accordion widget in the Job Openings
+section. Each role is one accordion item:
+
+- **Title** — the job title.
+- **Content** — a grey meta line (location · type · shift), then
+  `Responsibilities` and `Requirements` lists, then the role's own email
+  link. Duplicating an existing item and editing the text is the quickest
+  way to add one.
+
+Keep the per-role mailto subject in step with the title so applications
+arrive already labelled:
+
+```
+mailto:info@satcomgs.com?subject=Application%20%E2%80%94%20Job%20Title%20Here
+```
+
+When every role is filled, delete the accordion items — the heading, the
+intro line and the "Email us your resume" band all still read correctly with
+no vacancies listed.
+
+### Where the applications go
+
+Everything points at `info@satcomgs.com`:
+
+| Link | Subject line |
+|---|---|
+| "Email us your resume" button | Job application — SGS |
+| "Email us your resume for this role" inside a vacancy | Application — <role> |
+| The email address in the How to Apply band | none |
+
+Point these at a dedicated address (`careers@…`) by changing `TO` at the top
+of `build_careers.py` and re-running it, or by editing the links in Elementor.

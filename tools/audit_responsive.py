@@ -14,7 +14,7 @@ from playwright.sync_api import sync_playwright
 
 BASE = "https://satcomgateway.com"
 PAGES = {"home": "/", "about": "/about-us/", "services": "/our-services/",
-         "news": "/news-events/", "contact": "/contact-us/"}
+         "news": "/news-events/", "careers": "/careers/", "contact": "/contact-us/"}
 WIDTHS = [(820, "tablet", 300), (390, "phone", 240)]
 
 PROBE = r"""(minChild) => {

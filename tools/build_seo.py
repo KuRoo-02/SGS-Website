@@ -65,6 +65,11 @@ PAGES = [
          desc="Announcements, technical updates and events from Satcom Gateway Services, "
               "Malaysia's carrier-neutral satellite teleport and data centre operator.",
          crumbs=[("News & Events", "/news-events/")]),
+    dict(slug="careers", path="/careers/", page="careers",
+         ogtitle="Careers at Satcom Gateway Services",
+         desc="Satellite teleport and data centre careers in Rantau, Negeri Sembilan. "
+              "See the current openings at SGS and email your resume to %s." % EMAIL,
+         crumbs=[("Careers", "/careers/")]),
     dict(slug="contact", path="/contact-us/", page="contact-us",
          ogtitle="Contact Satcom Gateway Services",
          desc="Contact SGS about gateway hosting, satellite capacity, backhaul or "

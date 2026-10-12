@@ -21,6 +21,7 @@ CARDS = {
     "about":    ("facility-2", 0.45),
     "services": ("antenna-3", 0.40),
     "news":     ("teleport-security", 0.45),
+    "careers":  ("office-team", 0.42),
     "contact":  ("facility-1", 0.50),
 }
 
